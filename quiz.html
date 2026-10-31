@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
+
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('Poppins/Poppins-Bold.ttf') format('truetype');
+            font-weight: 400;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        :root {
+            --vanilla-cream: #FFF1D6;
+            --pastel-pink: #FFC8DD;
+            --pastel-aqua: #A8DADC;
+            --pastel-green: #B8D8BA;
+            --soft-charcoal: #3D4856;
+            --ocean-blue: #6B9AC4;
+        }
+
+        .container-fluid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--vanilla-cream);
+            padding: 1.8rem;
+        }
+
+        .container-fluid main {
+            width: 100%;
+            max-width: 640px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .back {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #ffffff;
+            text-decoration: none;
+            background-color: var(--ocean-blue);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .back .fa {
+            font-size: 11px;
+        }
+
+        /* ---------- Cards ---------- */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quiz-card {
+            background-color: var(--card-bg, #ffffff);
+            border-radius: 28px;
+            padding: 2rem;
+            color: var(--soft-charcoal);
+            box-shadow: 0 14px 30px rgba(61, 72, 86, 0.12);
+            animation: fadeUp 0.5s ease backwards;
+        }
+
+        .quiz-card[hidden] {
+            display: none;
+        }
+
+        .quiz-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            background-color: #ffffff;
+            padding: 4px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .progress {
+            height: 15px;
+            background-color: rgba(255, 255, 255, 0.75);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--ocean-blue);
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+
+        #question {
+            font-size: 22px;
+            line-height: 1.3;
+            margin-bottom: 1.2rem;
+        }
+
+        /* ---------- Options ---------- */
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid transparent;
+            border-radius: 18px;
+            background-color: var(--vanilla-cream);
+            color: var(--soft-charcoal);
+            font-size: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .option:hover:not(:disabled) {
+            border-color: var(--ocean-blue);
+        }
+
+        .option:disabled {
+            cursor: default;
+            color: var(--soft-charcoal);
+        }
+
+        .option.correct {
+            background-color: #ffffff;
+            border-color: #3f8f4a;
+        }
+
+        .option.wrong {
+            background-color: #ffffff;
+            border-color: #d9487a;
+        }
+
+        .option.correct .fa {
+            color: #3f8f4a;
+        }
+
+        .option.wrong .fa {
+            color: #d9487a;
+        }
+
+        .option-letter {
+            flex: none;
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background-color: var(--card-bg, var(--pastel-aqua));
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option .fa {
+            font-size: 14px;
+        }
+
+        .feedback {
+            min-height: 1.6em;
+            margin-top: 1rem;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 0.8rem;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 28px;
+            background-color: var(--ocean-blue);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn[hidden] {
+            display: none;
+        }
+
+        .btn:hover {
+            filter: brightness(1.06);
+        }
+
+        .btn.alt {
+            background-color: var(--soft-charcoal);
+        }
+
+        /* ---------- Result ---------- */
+        .result {
+            text-align: center;
+        }
+
+        .result h2 {
+            font-size: 26px;
+            margin-bottom: 0.4rem;
+        }
+
+        .score {
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin: 0.6rem 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 22px;
+            border-radius: 999px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background-color: #ffffff;
+            border: 3px solid transparent;
+        }
+
+        .status.passed {
+            border-color: #3f8f4a;
+        }
+
+        .status.failed {
+            border-color: #d9487a;
+        }
+
+        .result p {
+            max-width: 40ch;
+            margin: 0 auto 0.6rem;
+        }
+
+        .result-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .error p {
+            margin-bottom: 0.5rem;
+        }
+
+        @media only screen and (max-width: 500px) {
+            .container-fluid {
+                padding: 1.5rem;
+                align-items: flex-start;
+            }
+
+            .quiz-card {
+                padding: 1.4rem;
+                margin-top: 1rem;
+            }
+
+            #question {
+                font-size: 19px;
+            }
+
+            .option {
+                font-size: 15px;
+                padding: 12px 14px;
+            }
+
+            .score {
+                font-size: 52px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .quiz-card,
+            .progress-bar,
+            .option {
+                animation: none;
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <main>
+            <a href="choose.html" class="back">
+                <i class="fa fa-chevron-left"></i>
+                Back to topics
+            </a>
+
+            <!-- Question screen -->
+            <section class="quiz-card" id="quizCard">
+                <div class="quiz-top">
+                    <span class="badge" id="categoryName"></span>
+                    <span id="counter"></span>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" id="bar"></div>
+                </div>
+                <h2 id="question"></h2>
+                <div class="options" id="options"></div>
+                <p class="feedback" id="feedback" aria-live="polite"></p>
+                <button class="btn" id="nextBtn" hidden>Next question</button>
+            </section>
+
+            <!-- Result screen -->
+            <section class="quiz-card result" id="result" hidden>
+                <h2>Quiz Results</h2>
+                <div class="score" id="scoreText"></div>
+                <div class="status" id="statusText"></div>
+                <p id="resultMessage"></p>
+                <p id="passInfo"></p>
+                <div class="result-buttons">
+                    <button class="btn" id="retryBtn">Try again</button>
+                    <a href="choose.html" class="btn alt">Choose another topic</a>
+                </div>
+            </section>
+
+            <!-- Shown when the category is missing or unknown -->
+            <section class="quiz-card error" id="errorCard" hidden>
+                <h2>Pick a topic first</h2>
+                <p>We couldn't find that topic. Go back and choose Event Management, Housekeeping Forms, or Front Office Liaising.</p>
+                <a href="choose.html" class="btn">Choose a topic</a>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const PASS_SCORE = 7;           // need 7 out of 10 to pass
+        const QUESTIONS_PER_QUIZ = 10;  // how many questions are asked each attempt
+
+        const QUIZZES = {
+            // Topic 1: Module 8 PPT (Event Management / TMICE). Pool of 30, 10 are picked each attempt.
+            event: {
+                title: 'Event Management',
+                color: 'var(--pastel-green)',
+                questions: [
+                    { q: "Event management is best described as which of the following?", options: ["The professional process of planning, organizing, coordinating, and executing gatherings and celebrations","Selling airline tickets to tourists","Designing hotel buildings","Advertising tourism products on social media only"], answer: "The professional process of planning, organizing, coordinating, and executing gatherings and celebrations" },
+                    { q: "In the tourism and hospitality sector, what does TMICE stand for?", options: ["Tourism, Meetings, Incentives, Conventions, and Exhibitions","Travel, Marketing, Innovation, Culture, and Events","Tourism, Management, Investments, Conferences, and Expos","Transport, Meetings, Incentives, Customs, and Entertainment"], answer: "Tourism, Meetings, Incentives, Conventions, and Exhibitions" },
+                    { q: "Why does every TMICE event function as a standalone project?", options: ["Because TMICE events are temporary, high-budget, time-sensitive, and multi-faceted","Because they repeat the same plan every year","Because they do not need a budget","Because they are always run by one person"], answer: "Because TMICE events are temporary, high-budget, time-sensitive, and multi-faceted" },
+                    { q: "What does project management help to plan, execute, control, and finalize?", options: ["Complex business events and travel itineraries","National elections","Daily household chores","Online shopping orders"], answer: "Complex business events and travel itineraries" },
+                    { q: "According to the module, a project must have what?", options: ["A definite beginning and ending period","No fixed deadline","A permanent team that never changes","An unlimited budget"], answer: "A definite beginning and ending period" },
+                    { q: "Which activity is listed under project management in MICE events?", options: ["Site visits and choosing venues and accommodations","Drafting new laws for the host country","Manufacturing event equipment","Training airline pilots"], answer: "Site visits and choosing venues and accommodations" },
+                    { q: "Which organization wrote the PMBOK framework discussed in the module?", options: ["American National Standards Institute (ANSI)","World Tourism Organization","International Olympic Committee","World Health Organization"], answer: "American National Standards Institute (ANSI)" },
+                    { q: "How is the PMBOK guide described in the module?", options: ["A process-based framework","A hotel rating system","A travel booking website","A financial accounting software"], answer: "A process-based framework" },
+                    { q: "The three components of the PMBOK framework are classified into how many project management steps?", options: ["Five","Three","Seven","Ten"], answer: "Five" },
+                    { q: "Which of these is NOT one of the five PMBOK process groups?", options: ["Marketing","Initiating","Planning","Closing"], answer: "Marketing" },
+                    { q: "Compared with conventions and exhibitions, how much time do organizers use to communicate with clients for corporate meetings and incentive travel programs?", options: ["Much less time","Much more time","Exactly the same time","No time at all"], answer: "Much less time" },
+                    { q: "What do organizers clarify with clients in pre-event meetings?", options: ["Goals and objectives, size of the event, and other requirements","Only the color of the staff uniforms","Only the final post-event report","Only the catering invoice"], answer: "Goals and objectives, size of the event, and other requirements" },
+                    { q: "What does RFP stand for?", options: ["Request for Proposal","Report for Payment","Registration for Participants","Review of Previous Plans"], answer: "Request for Proposal" },
+                    { q: "Project planning success depends on what?", options: ["The amount and quality of information gathered at project initiation","The size of the event logo","The number of souvenirs prepared","The weather on the day of the event"], answer: "The amount and quality of information gathered at project initiation" },
+                    { q: "What is the Work Breakdown Structure (WBS)?", options: ["Breaking the entire event into smaller activities that serve as a checklist","A list of hotel rooms booked by guests","A summary written after the event","A contract with external service providers"], answer: "Breaking the entire event into smaller activities that serve as a checklist" },
+                    { q: "Which process confirms with clients the correctness and completeness of the plan?", options: ["Scope verification","Scope control","Scope defining","Risk management"], answer: "Scope verification" },
+                    { q: "Which process allows an organizer to monitor the actual progress of each task compared to what was planned?", options: ["Scope control","Scope defining","Scope planning","Staffing"], answer: "Scope control" },
+                    { q: "In the staffing plan, organizers single out tasks and give each of them what?", options: ["An appropriate due date","A ticket price","A sponsor logo","A venue color"], answer: "An appropriate due date" },
+                    { q: "Which of the following is an example of a risk that can affect an event?", options: ["Natural disasters or undesirable weather conditions","A well-prepared event schedule","A signed contract with a vendor","A completed post-event report"], answer: "Natural disasters or undesirable weather conditions" },
+                    { q: "Why do core organizers assign tasks to external service providers?", options: ["They cannot perform all the tasks alone","They want to avoid contact with clients","Events no longer need planning","Contracts are not required"], answer: "They cannot perform all the tasks alone" },
+                    { q: "The success of the project execution phase highly depends on what?", options: ["Planning accuracy and completeness","The number of social media followers","The name of the venue","The size of the guest list only"], answer: "Planning accuracy and completeness" },
+                    { q: "Why does the initial plan continuously change during execution?", options: ["Because of changing client requests and unexpected events or conditions","Because planning is not needed","Because the event has no clients","Because contracts are always cancelled"], answer: "Because of changing client requests and unexpected events or conditions" },
+                    { q: "What is the purpose of information distribution during execution?", options: ["To update progress, identify potential issues, and align expectations with related parties","To announce the event winners","To print the event tickets","To close the project accounts"], answer: "To update progress, identify potential issues, and align expectations with related parties" },
+                    { q: "Project monitoring and control involves comparing which two things?", options: ["Actual performance with planned performance","Prices of two different hotels","Two competing events","Past clients and future clients"], answer: "Actual performance with planned performance" },
+                    { q: "Which of these is one of the three parts of risk meetings?", options: ["Executive review","Menu tasting","Ribbon-cutting ceremony","Guest registration"], answer: "Executive review" },
+                    { q: "Which type of control is described as the hardest to manage and the most crucial to event success?", options: ["Schedule","Quality","Cost","Scope"], answer: "Schedule" },
+                    { q: "What should staff do before making any payment to an external service provider?", options: ["Inspect the quality of the services against the contract","Cancel the contract","Hire a new provider","Increase the budget"], answer: "Inspect the quality of the services against the contract" },
+                    { q: "Which closing activity involves preparing documentation of what was delivered and redistributing rented project assets?", options: ["Administrative closure","Post evaluation","Risk identification","Scope defining"], answer: "Administrative closure" },
+                    { q: "Measuring return on investment (ROI) compares the results with what?", options: ["The initial investment","The number of attendee complaints","The size of the venue","Competitors' prices"], answer: "The initial investment" },
+                    { q: "What does a post-event report point out?", options: ["Every achievement and lessons learned from project initiation to the very end","Only the profits of the vendors","Only the complaints of attendees","Only the menu served at the event"], answer: "Every achievement and lessons learned from project initiation to the very end" }
+                ]
+            },
+            // Topic 2: Housekeeping PPT (forms, handling client queries, common problems). Pool of 20, 10 are picked each attempt.
+            housekeeping: {
+                title: 'Housekeeping Forms',
+                color: 'var(--pastel-aqua)',
+                questions: [
+                    { q: "Forms and reports in housekeeping serve as what?", options: ["Evidence of a specific incident, situation, or happening", "Decorations for the front desk", "Advertising materials for guests", "A replacement for room cleaning"], answer: "Evidence of a specific incident, situation, or happening" },
+                    { q: "How can the information contained in housekeeping reports be used?", options: ["To make important decisions that affect the establishment", "To decorate guest rooms", "To print hotel brochures", "To train guests"], answer: "To make important decisions that affect the establishment" },
+                    { q: "Which of these is a housekeeping form?", options: ["Lost property report", "Airline boarding pass", "Restaurant menu", "Passport application"], answer: "Lost property report" },
+                    { q: "What is the Housekeeping Attendant's Daily Assignment Sheet used for?", options: ["To record the tasks done during a shift", "To list the hotel menu prices", "To book rooms for arriving guests", "To report lost property"], answer: "To record the tasks done during a shift" },
+                    { q: "Who uses the Housekeeping Attendant's Daily Assignment Sheet?", options: ["Housekeepers or room attendants", "Front desk cashiers", "Restaurant servers", "Hotel guests"], answer: "Housekeepers or room attendants" },
+                    { q: "When is the Maintenance Request Form used?", options: ["Whenever a guest reports a problem to the housekeeping department", "When a guest checks out", "When linens are washed", "When rooms are assigned to arriving guests"], answer: "Whenever a guest reports a problem to the housekeeping department" },
+                    { q: "Which form is used when there are requests for work to be done?", options: ["Housekeeping Work Order Form", "Lost Property Report", "Housekeeping Status Report", "Guest Room Cleaning Checklist"], answer: "Housekeeping Work Order Form" },
+                    { q: "Who uses the Guest Room Cleaning Checklist, and for what?", options: ["The housekeeping supervisor, to check daily how a guest room was cleaned", "The guest, to rate the hotel's food", "The front desk clerk, to assign rooms", "The cook, to check the menu"], answer: "The housekeeping supervisor, to check daily how a guest room was cleaned" },
+                    { q: "Who prepares the Housekeeping Status Report, and who receives it?", options: ["It is prepared by housekeeping and handed to the front desk", "It is prepared by the front desk and handed to the guests", "It is prepared by guests and handed to the kitchen", "It is prepared by security and handed to housekeeping"], answer: "It is prepared by housekeeping and handed to the front desk" },
+                    { q: "What does the front desk do with the room status update from housekeeping?", options: ["Assigns rooms to arriving guests", "Cleans the rooms", "Orders new blankets", "Repairs the equipment"], answer: "Assigns rooms to arriving guests" },
+                    { q: "What happens when clients' queries are handled the right way?", options: ["Clients will keep coming back", "Clients will go elsewhere", "Room rates automatically go down", "Housekeeping forms are no longer needed"], answer: "Clients will keep coming back" },
+                    { q: "Which channels for handling clients' queries are mentioned in the module?", options: ["Telephone, fax machine, e-mail", "Newspaper ads, billboards, flyers", "Radio, television, cinema ads", "Posters, banners, brochures"], answer: "Telephone, fax machine, e-mail" },
+                    { q: "Within how many rings should a phone call be answered?", options: ["Three", "Five", "Seven", "Ten"], answer: "Three" },
+                    { q: "What should you say when answering a call in a hotel?", options: ["The name of the hotel, your name, and the customary greetings", "Only the caller's room number", "Your personal phone number", "The hotel's room rates"], answer: "The name of the hotel, your name, and the customary greetings" },
+                    { q: "What should you have in hand when answering a call?", options: ["A pen and paper for documentation", "A room key", "A calculator", "A menu"], answer: "A pen and paper for documentation" },
+                    { q: "If you need to put a caller on hold, what should you do?", options: ["Explain the reason and wait for their response", "Put them on hold without saying anything", "Hang up and call back next week", "Transfer them to another guest"], answer: "Explain the reason and wait for their response" },
+                    { q: "When should a callback be made?", options: ["In the soonest possible time", "At the end of the week", "Only if the caller calls again", "Next month"], answer: "In the soonest possible time" },
+                    { q: "What should you do before ending a call?", options: ["Repeat all the details and end the conversation politely", "Hang up quickly", "Put the caller on hold for a long time", "Ask the caller to call again later"], answer: "Repeat all the details and end the conversation politely" },
+                    { q: "Which of these is a common problem related to housekeeping?", options: ["Noise coming from other rooms", "Fully stocked amenities in every room", "Rooms cleaned perfectly", "Quick elevator service"], answer: "Noise coming from other rooms" },
+                    { q: "Which of these is also listed as a common housekeeping problem?", options: ["Laundry error", "A free upgrade to a suite", "Early breakfast service", "Discounted room rates"], answer: "Laundry error" }
+                ]
+            },
+            // Topic 3: Front Office PPT (liaising with other departments, guest cycle, moment of truth). Pool of 23, 10 are picked each attempt.
+            frontoffice: {
+                title: 'Front Office Liaising',
+                color: 'var(--pastel-pink)',
+                questions: [
+                    { q: "Which two divisions are the main revenue-raising departments of a large hotel?", options: ["Rooms division and food and beverage", "Security and accounts", "Human resources and IT", "Maintenance and premises management"], answer: "Rooms division and food and beverage" },
+                    { q: "Which of these is another way a hotel may earn revenue?", options: ["Recreational facilities, guest laundry/dry cleaning, or a business centre", "Security patrols", "Payroll processing", "Employee training"], answer: "Recreational facilities, guest laundry/dry cleaning, or a business centre" },
+                    { q: "Which of these departments fulfils a management and support function?", options: ["Information technology (IT)", "Rooms division", "Food and beverage division", "Recreational facilities"], answer: "Information technology (IT)" },
+                    { q: "Why is the Front Office so important when liaising with other departments?", options: ["It is the first and last point that interacts with the guest", "It is the only department that earns money", "It handles all the cooking", "It manages the hotel's payroll"], answer: "It is the first and last point that interacts with the guest" },
+                    { q: "Which department manages guest rooms and the cleanliness of all public areas of the hotel?", options: ["Housekeeping", "Security", "Accounts", "Sales and marketing"], answer: "Housekeeping" },
+                    { q: "What information does housekeeping need from the front office to plan staff rosters and room cleaning schedules?", options: ["Arrival and departure information", "The hotel's advertising budget", "Staff payroll records", "Restaurant menus"], answer: "Arrival and departure information" },
+                    { q: "What kind of room information does the front office need from housekeeping?", options: ["Up-to-date room status, such as occupied, vacant but not ready, out of order, or ready to let", "The menu of the day", "The sales targets for the year", "The list of staff training programs"], answer: "Up-to-date room status, such as occupied, vacant but not ready, out of order, or ready to let" },
+                    { q: "Which department carries out minor repairs such as carpentry, plumbing, and electrics?", options: ["Maintenance", "Housekeeping", "Switchboard", "Human resources"], answer: "Maintenance" },
+                    { q: "Why does the front office need information on out-of-order rooms from Maintenance?", options: ["To update room availability records", "To prepare the guests' bills", "To plan the restaurant menu", "To recruit new staff"], answer: "To update room availability records" },
+                    { q: "Which department purchases and prepares food and drink and offers banqueting, restaurant, and room service?", options: ["Food and beverage (F&B)", "Accounts", "Maintenance", "Security"], answer: "Food and beverage (F&B)" },
+                    { q: "Why does the food and beverage department need occupancy forecasts from the front office?", options: ["To estimate provisions requirements", "To repair kitchen equipment", "To hire security guards", "To design the hotel website"], answer: "To estimate provisions requirements" },
+                    { q: "Why does the front office need information on food and drink charges?", options: ["To add them to guest bills", "To clean guest rooms", "To plan staff training", "To patrol the premises"], answer: "To add them to guest bills" },
+                    { q: "Which department processes payrolls and prepares audits and financial statements?", options: ["Accounts", "Housekeeping", "Security", "Sales and marketing"], answer: "Accounts" },
+                    { q: "Which department monitors surveillance equipment and handles security incidents?", options: ["Security", "Maintenance", "Human resources", "Accounts"], answer: "Security" },
+                    { q: "Which department designs the web site, handles advertising and promotions, and wins corporate and tour operator business?", options: ["Sales and marketing", "Housekeeping", "Accounts", "Security"], answer: "Sales and marketing" },
+                    { q: "Which department handles recruitment, induction and training, performance appraisal, and compliance with employment law?", options: ["Human resources (HR)", "Maintenance", "Security", "Food and beverage"], answer: "Human resources (HR)" },
+                    { q: "In the flow of information within the hotel, which section sits at the center?", options: ["Reception", "Kitchen", "Bar", "Security"], answer: "Reception" },
+                    { q: "Which front office section needs the current guest list and checked-out guest list to charge calls to the right rooms?", options: ["Switchboard", "Concierge", "Cashier", "Reservations"], answer: "Switchboard" },
+                    { q: "What is the correct order of the stages in the guest cycle?", options: ["Pre-arrival, arrival, occupancy, departure", "Arrival, pre-arrival, departure, occupancy", "Occupancy, arrival, departure, pre-arrival", "Departure, occupancy, arrival, pre-arrival"], answer: "Pre-arrival, arrival, occupancy, departure" },
+                    { q: "Which activities belong to the arrival stage of the guest cycle?", options: ["Registration, room assignment, and issuing of keys", "Check-out and bill settlement", "Reservations", "Currency exchange and safe deposits"], answer: "Registration, room assignment, and issuing of keys" },
+                    { q: "Which activities belong to the departure stage of the guest cycle?", options: ["Check-out and bill settlement", "Reservations", "Registration and room assignment", "Currency exchange and safe deposits"], answer: "Check-out and bill settlement" },
+                    { q: "What is a \"moment of truth\"?", options: ["The impression created each time the guest experiences something in the venue", "The final bill given to the guest", "The hotel's yearly audit", "A meeting between department heads"], answer: "The impression created each time the guest experiences something in the venue" },
+                    { q: "Which of these is NOT a type of moment of truth?", options: ["Seasonal", "Positive", "Negative", "Neutral"], answer: "Seasonal" }
+                ]
+            }
+        };
+
+        // ---------- Elements ----------
+        const quizCard = document.getElementById('quizCard');
+        const resultCard = document.getElementById('result');
+        const errorCard = document.getElementById('errorCard');
+        const categoryName = document.getElementById('categoryName');
+        const counter = document.getElementById('counter');
+        const bar = document.getElementById('bar');
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const feedback = document.getElementById('feedback');
+        const nextBtn = document.getElementById('nextBtn');
+        const retryBtn = document.getElementById('retryBtn');
+
+        // ---------- State ----------
+        const category = new URLSearchParams(window.location.search).get('category');
+        const quiz = QUIZZES[category];
+        let questions = [];
+        let index = 0;
+        let score = 0;
+
+        function shuffle(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function startQuiz() {
+            questions = shuffle(quiz.questions).slice(0, QUESTIONS_PER_QUIZ);
+            index = 0;
+            score = 0;
+            resultCard.hidden = true;
+            quizCard.hidden = false;
+            categoryName.textContent = quiz.title;
+            document.querySelector('main').style.setProperty('--card-bg', quiz.color);
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const current = questions[index];
+            counter.textContent = 'Question ' + (index + 1) + ' of ' + questions.length;
+            bar.style.width = (index / questions.length) * 100 + '%';
+            questionEl.textContent = current.q;
+            feedback.textContent = '';
+            nextBtn.hidden = true;
+            optionsEl.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+
+            shuffle(current.options).forEach(function (text, i) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'option';
+                btn.dataset.value = text;
+                btn.innerHTML = '<span class="option-letter"></span><span class="option-text"></span><i class="fa" aria-hidden="true"></i>';
+                btn.querySelector('.option-letter').textContent = letters[i];
+                btn.querySelector('.option-text').textContent = text;
+                btn.addEventListener('click', function () { chooseAnswer(btn, text); });
+                optionsEl.appendChild(btn);
+            });
+        }
+
+        function chooseAnswer(clicked, text) {
+            const current = questions[index];
+            const isCorrect = text === current.answer;
+
+            optionsEl.querySelectorAll('.option').forEach(function (btn) {
+                btn.disabled = true;
+                const label = btn.dataset.value;
+                if (label === current.answer) {
+                    btn.classList.add('correct');
+                    btn.querySelector('.fa').classList.add('fa-check');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+                feedback.textContent = 'Correct! +1 point';
+            } else {
+                clicked.classList.add('wrong');
+                clicked.querySelector('.fa').classList.add('fa-xmark');
+                feedback.textContent = 'Not quite. The correct answer is ' + current.answer + '.';
+            }
+
+            nextBtn.textContent = index === questions.length - 1 ? 'See results' : 'Next question';
+            nextBtn.hidden = false;
+            nextBtn.focus();
+        }
+
+        function showResult() {
+            const total = questions.length;
+            const passed = score >= PASS_SCORE;
+
+            bar.style.width = '100%';
+            quizCard.hidden = true;
+            resultCard.hidden = false;
+
+            document.getElementById('scoreText').textContent = score + ' / ' + total;
+
+            const status = document.getElementById('statusText');
+            status.textContent = passed ? 'Passed' : 'Failed';
+            status.className = 'status ' + (passed ? 'passed' : 'failed');
+
+            document.getElementById('resultMessage').textContent = passed
+                ? 'Great job! You really know your ' + quiz.title.toLowerCase() + ' lessons.'
+                : 'You can try again. You can do better on this topic.';
+
+            document.getElementById('passInfo').textContent =
+                'Passing score: ' + PASS_SCORE + ' out of ' + total + '.';
+        }
+
+        nextBtn.addEventListener('click', function () {
+            if (index === questions.length - 1) {
+                showResult();
+            } else {
+                index++;
+                showQuestion();
+            }
+        });
+
+        retryBtn.addEventListener('click', startQuiz);
+
+        // ---------- Start ----------
+        if (quiz) {
+            startQuiz();
+        } else {
+            quizCard.hidden = true;
+            errorCard.hidden = false;
+        }
+    </script>
+</body>
+
+</html>

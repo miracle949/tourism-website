@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="blob blob-pink"></div>
+        <div class="blob blob-aqua"></div>
+        <svg class="sky" id="sky" aria-hidden="true">
+            <defs>
+                <path id="planeShape"
+                    d="M480 192H365.7L260.2 38.9C256.2 33 249.6 29.5 242.5 29.5H202.5C190.4 29.5 181.7 41.2 185.2 52.8L229.9 192H131.2L96 144C92.9 139.8 88 137.4 82.8 137.4H48.5C37.5 137.4 29.6 148 32.8 158.5L56 224L32.8 289.5C29.6 300 37.5 310.6 48.5 310.6H82.8C88 310.6 92.9 308.2 96 304L131.2 256H229.9L185.2 395.2C181.7 406.8 190.4 418.5 202.5 418.5H242.5C249.6 418.5 256.2 415 260.2 409.1L365.7 256H480C515.3 256 544 241.7 544 224C544 206.3 515.3 192 480 192Z" />
+            </defs>
+
+            <path id="loop1" class="trail t1" />
+            <path id="loop2" class="trail t2" />
+
+            <g class="sky-plane p1" data-route="loop1" data-dur="30000" data-offset="0">
+                <g transform="scale(0.09) translate(-288 -224)">
+                    <use href="#planeShape" />
+                </g>
+            </g>
+            <g class="sky-plane p2" data-route="loop1" data-dur="30000" data-offset="0.33">
+                <g transform="scale(0.09) translate(-288 -224)">
+                    <use href="#planeShape" />
+                </g>
+            </g>
+            <g class="sky-plane p3" data-route="loop1" data-dur="30000" data-offset="0.66">
+                <g transform="scale(0.09) translate(-288 -224)">
+                    <use href="#planeShape" />
+                </g>
+            </g>
+            <g class="sky-plane p4" data-route="loop2" data-dur="24000" data-offset="0">
+                <g transform="scale(0.09) translate(-288 -224)">
+                    <use href="#planeShape" />
+                </g>
+            </g>
+            <g class="sky-plane p5" data-route="loop2" data-dur="24000" data-offset="0.5">
+                <g transform="scale(0.09) translate(-288 -224)">
+                    <use href="#planeShape" />
+                </g>
+            </g>
+        </svg>
+
+        <div class="sky" aria-hidden="true">
+            <div class="orbit" style="--x:9%;  --y:52%; --s:34px; --r:44px; --d:22s; --c:var(--pastel-aqua)"><span
+                    class="fly"><svg>
+                        <use href="#plane-icon" />
+                    </svg></span></div>
+            <div class="orbit" style="--x:20%; --y:70%; --s:26px; --r:36px; --d:26s; --c:var(--pastel-green)"><span
+                    class="fly"><svg>
+                        <use href="#plane-icon" />
+                    </svg></span></div>
+            <div class="orbit" style="--x:7%;  --y:82%; --s:30px; --r:40px; --d:24s; --c:var(--pastel-pink)"><span
+                    class="fly"><svg>
+                        <use href="#plane-icon" />
+                    </svg></span></div>
+            <div class="orbit" style="--x:90%; --y:18%; --s:34px; --r:44px; --d:22s; --c:var(--pastel-pink)"><span
+                    class="fly"><svg>
+                        <use href="#plane-icon" />
+                    </svg></span></div>
+            <div class="orbit" style="--x:79%; --y:34%; --s:26px; --r:36px; --d:26s; --c:var(--pastel-green)"><span
+                    class="fly"><svg>
+                        <use href="#plane-icon" />
+                    </svg></span></div>
+            <div class="orbit" style="--x:88%; --y:52%; --s:30px; --r:40px; --d:24s; --c:var(--pastel-aqua)"><span
+                    class="fly"><svg>
+                        <use href="#plane-icon" />
+                    </svg></span></div>
+        </div>
+        <main>
+            <h2>The Tourism Explorer</h2>
+            <p>Discover amazing destinations and explore the wonders of the world!</p>
+            <div class="button-groups">
+                <a href="introduction.html" id="startBtn">Get Started</a>
+                <!-- <a href="#" id="openModal">How to Play</a> -->
+            </div>
+        </main>
+    </div>
+
+    <!-- How to Play modal -->
+    <div class="modal-overlay" id="howToPlayModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button class="modal-close" id="closeModal" aria-label="Close">&times;</button>
+            <h3 id="modalTitle">How to play</h3>
+
+            <ol class="steps">
+                <li>
+                    <span class="step-number">1</span>
+                    <div>
+                        <h4>Start the quiz</h4>
+                        <p>Press "Start the Quiz" to begin your trip.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="step-number">2</span>
+                    <div>
+                        <h4>Choose an answer</h4>
+                        <p>Read each question and pick one of the options.</p>
+                    </div>
+                </li>
+                <li>
+                    <span class="step-number">3</span>
+                    <div>
+                        <h4>See your score</h4>
+                        <p>Each correct answer earns a point. Check your final score at the end.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Loading screen -->
+    <div class="loader-overlay" id="loader" aria-hidden="true">
+        <div class="loader-flight">
+            <svg viewBox="0 0 400 70" aria-hidden="true">
+                <defs>
+                    <clipPath id="revealClip">
+                        <rect id="revealRect" x="0" y="-50" width="0" height="170" />
+                    </clipPath>
+                </defs>
+                <path class="curve" clip-path="url(#revealClip)" d="M 20 45 C 90 0, 150 0, 200 35 S 310 70, 375 22" />
+                <path id="flightPath" d="M 20 45 C 90 0, 150 0, 200 35 S 310 70, 375 22" fill="none" stroke="none" />
+                <g class="loader-plane" id="plane">
+                    <g transform="rotate(45) scale(0.055) translate(-256 -256)">
+                        <path class="plane"
+                            d="M480 192H365.7L260.2 38.9C256.2 33 249.6 29.5 242.5 29.5H202.5C190.4 29.5 181.7 41.2 185.2 52.8L229.9 192H131.2L96 144C92.9 139.8 88 137.4 82.8 137.4H48.5C37.5 137.4 29.6 148 32.8 158.5L56 224L32.8 289.5C29.6 300 37.5 310.6 48.5 310.6H82.8C88 310.6 92.9 308.2 96 304L131.2 256H229.9L185.2 395.2C181.7 406.8 190.4 418.5 202.5 418.5H242.5C249.6 418.5 256.2 415 260.2 409.1L365.7 256H480C515.3 256 544 241.7 544 224C544 206.3 515.3 192 480 192Z" />
+                    </g>
+                </g>
+            </svg>
+        </div>
+        <div class="loader-bar">
+            <div class="loader-fill" id="loaderFill"></div>
+        </div>
+        <p class="loader-text">Loading...</p>
+    </div>
+
+    <script>
+        const modal = document.getElementById('howToPlayModal');
+        const openBtn = document.getElementById('openModal');
+        const closeBtn = document.getElementById('closeModal');
+        const startBtn = document.getElementById('startBtn');
+        const loader = document.getElementById('loader');
+        const loaderFill = document.getElementById('loaderFill');
+
+        function openModal(e) {
+            e.preventDefault();
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+            closeBtn.focus();
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+            modal.setAttribute('aria-hidden', 'true');
+            openBtn.focus();
+        }
+
+        // openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+
+        // click the dark background to close
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // press Escape to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+        });
+
+        const flightPath = document.getElementById('flightPath');
+        const plane = document.getElementById('plane');
+        const revealRect = document.getElementById('revealRect');
+        const pathLen = flightPath.getTotalLength();
+        let rafId;
+
+        function placePlane(p) {
+            const len = pathLen * p;
+            const pt = flightPath.getPointAtLength(len);
+            const a = flightPath.getPointAtLength(Math.max(len - 1, 0));
+            const b = flightPath.getPointAtLength(Math.min(len + 1, pathLen));
+            const angle = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+            plane.setAttribute('transform', `translate(${pt.x} ${pt.y}) rotate(${angle})`);
+            revealRect.setAttribute('width', pt.x);
+
+            loaderFill.style.width = (p * 100) + '%';
+        }
+
+        function startFlight() {
+            const delay = 300, dur = 2000, start = performance.now();
+            placePlane(0);
+            plane.style.opacity = 1;
+            function frame(now) {
+                const t = Math.min(Math.max((now - start - delay) / dur, 0), 1);
+                const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;   // ease in-out
+                placePlane(e);
+                if (t < 1) rafId = requestAnimationFrame(frame);
+            }
+            rafId = requestAnimationFrame(frame);
+        }
+
+        startBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            sessionStorage.setItem('fromHome', '1');   // tells introduction.html it came from Get Started
+            loader.classList.add('show');
+            startFlight();
+            setTimeout(() => {
+                window.location.href = startBtn.href;
+            }, 2500);
+        });
+
+        // if the user comes back with the browser's Back button, reset the page
+        window.addEventListener('pageshow', () => {
+            cancelAnimationFrame(rafId);
+            loader.classList.remove('show');
+            plane.style.opacity = 0;
+            revealRect.setAttribute('width', 0);
+
+            loaderFill.style.width = '0';
+        });
+
+        // ---------- airplanes flying around the whole page ----------
+        const sky = document.getElementById('sky');
+        const loop1 = document.getElementById('loop1');
+        const loop2 = document.getElementById('loop2');
+        const skyPlanes = [...document.querySelectorAll('.sky-plane')].map(el => ({
+            el,
+            path: document.getElementById(el.dataset.route),
+            len: 0,
+            dur: +el.dataset.dur,
+            offset: +el.dataset.offset
+        }));
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // dotted tail behind each plane
+        const SVGNS = 'http://www.w3.org/2000/svg';
+        const TRAIL_DOTS = 16, TRAIL_GAP = 14;
+
+        skyPlanes.forEach(f => {
+            const colorClass = [...f.el.classList].find(c => /^p\d+$/.test(c));
+            f.dots = [];
+            for (let i = 1; i <= TRAIL_DOTS; i++) {
+                const c = document.createElementNS(SVGNS, 'circle');
+                c.setAttribute('class', 'trail-dot ' + colorClass);
+                c.setAttribute('r', (3.8 * (1 - i / (TRAIL_DOTS * 1.4))).toFixed(2));
+                c.setAttribute('opacity', (0.85 * (1 - i / (TRAIL_DOTS + 1))).toFixed(2));
+                sky.insertBefore(c, f.el);
+                f.dots.push(c);
+            }
+        });
+
+        function ellipsePath(cx, cy, rx, ry) {
+            const k = 0.5523;
+            return `M ${cx} ${cy - ry} ` +
+                `C ${cx + k * rx} ${cy - ry}, ${cx + rx} ${cy - k * ry}, ${cx + rx} ${cy} ` +
+                `C ${cx + rx} ${cy + k * ry}, ${cx + k * rx} ${cy + ry}, ${cx} ${cy + ry} ` +
+                `C ${cx - k * rx} ${cy + ry}, ${cx - rx} ${cy + k * ry}, ${cx - rx} ${cy} ` +
+                `C ${cx - rx} ${cy - k * ry}, ${cx - k * rx} ${cy - ry}, ${cx} ${cy - ry} Z`;
+        }
+
+        function buildSky() {
+            const w = sky.clientWidth, h = sky.clientHeight;
+            sky.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+            // measure the text + buttons block
+            const s = sky.getBoundingClientRect();
+            const m = document.querySelector('main').getBoundingClientRect();
+            const cx = m.left - s.left + m.width / 2;
+            const cy = m.top - s.top + m.height / 2;
+
+            // ellipses that wrap around the block (x1.42 reaches its corners, + extra space)
+            const rx1 = Math.min(m.width / 2 * 1.42 + 40, w / 2 - 20);
+            const ry1 = Math.min(m.height / 2 * 1.42 + 40, h / 2 - 20);
+            const rx2 = Math.min(rx1 + 50, w / 2 - 20);
+            const ry2 = Math.min(ry1 + 35, h / 2 - 20);
+
+            loop1.setAttribute('d', ellipsePath(cx, cy, rx1, ry1));
+            loop2.setAttribute('d', ellipsePath(cx, cy, rx2, ry2));
+
+            skyPlanes.forEach(f => f.len = f.path.getTotalLength());
+        }
+
+        function flySky(now) {
+            skyPlanes.forEach(f => {
+                const p = reduceMotion ? f.offset : ((now / f.dur) + f.offset) % 1;
+                const l = f.len * p;
+                const pt = f.path.getPointAtLength(l);
+                const a = f.path.getPointAtLength(Math.max(l - 1, 0));
+                const b = f.path.getPointAtLength(Math.min(l + 1, f.len));
+                const angle = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+                f.el.setAttribute('transform', `translate(${pt.x} ${pt.y}) rotate(${angle})`);
+
+                f.dots.forEach((c, i) => {
+                    let d = l - (i + 1) * TRAIL_GAP;
+                    d = ((d % f.len) + f.len) % f.len;
+                    const q = f.path.getPointAtLength(d);
+                    c.setAttribute('cx', q.x);
+                    c.setAttribute('cy', q.y);
+                });
+            });
+            if (!reduceMotion) requestAnimationFrame(flySky);
+        }
+
+        buildSky();
+        window.addEventListener('resize', buildSky);
+        window.addEventListener('load', buildSky);
+        requestAnimationFrame(flySky);
+    </script>
+</body>
+
+</html>
