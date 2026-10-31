@@ -47,33 +47,6 @@
                 </g>
             </g>
         </svg>
-
-        <div class="sky" aria-hidden="true">
-            <div class="orbit" style="--x:9%;  --y:52%; --s:34px; --r:44px; --d:22s; --c:var(--pastel-aqua)"><span
-                    class="fly"><svg>
-                        <use href="#plane-icon" />
-                    </svg></span></div>
-            <div class="orbit" style="--x:20%; --y:70%; --s:26px; --r:36px; --d:26s; --c:var(--pastel-green)"><span
-                    class="fly"><svg>
-                        <use href="#plane-icon" />
-                    </svg></span></div>
-            <div class="orbit" style="--x:7%;  --y:82%; --s:30px; --r:40px; --d:24s; --c:var(--pastel-pink)"><span
-                    class="fly"><svg>
-                        <use href="#plane-icon" />
-                    </svg></span></div>
-            <div class="orbit" style="--x:90%; --y:18%; --s:34px; --r:44px; --d:22s; --c:var(--pastel-pink)"><span
-                    class="fly"><svg>
-                        <use href="#plane-icon" />
-                    </svg></span></div>
-            <div class="orbit" style="--x:79%; --y:34%; --s:26px; --r:36px; --d:26s; --c:var(--pastel-green)"><span
-                    class="fly"><svg>
-                        <use href="#plane-icon" />
-                    </svg></span></div>
-            <div class="orbit" style="--x:88%; --y:52%; --s:30px; --r:40px; --d:24s; --c:var(--pastel-aqua)"><span
-                    class="fly"><svg>
-                        <use href="#plane-icon" />
-                    </svg></span></div>
-        </div>
         <main>
             <h2>The Tourism Explorer</h2>
             <p>Discover amazing destinations and explore the wonders of the world!</p>
@@ -208,8 +181,9 @@
 
         startBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            sessionStorage.setItem('fromHome', '1');   // tells introduction.html it came from Get Started
+            sessionStorage.setItem('fromHome', '1');
             loader.classList.add('show');
+            stopSky();   // pause the background planes so the loading animation is smooth
             startFlight();
             setTimeout(() => {
                 window.location.href = startBtn.href;
@@ -224,28 +198,35 @@
             revealRect.setAttribute('width', 0);
 
             loaderFill.style.width = '0';
+            startSky();
         });
 
         // ---------- airplanes flying around the whole page ----------
         const sky = document.getElementById('sky');
         const loop1 = document.getElementById('loop1');
         const loop2 = document.getElementById('loop2');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isMobile = window.matchMedia('(max-width: 600px), (pointer: coarse)').matches;
+
+        // fewer planes on phones
+        if (isMobile) document.querySelectorAll('.p2, .p5').forEach(el => el.remove());
+
         const skyPlanes = [...document.querySelectorAll('.sky-plane')].map(el => ({
             el,
-            path: document.getElementById(el.dataset.route),
-            len: 0,
+            route: el.dataset.route,
             dur: +el.dataset.dur,
-            offset: +el.dataset.offset
+            offset: +el.dataset.offset,
+            table: null,
+            dots: []
         }));
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const tables = {};
 
-        // dotted tail behind each plane
+        // dotted tail behind each plane (fewer dots on phones)
         const SVGNS = 'http://www.w3.org/2000/svg';
-        const TRAIL_DOTS = 16, TRAIL_GAP = 14;
+        const TRAIL_DOTS = isMobile ? 8 : 12, TRAIL_GAP = 14;
 
         skyPlanes.forEach(f => {
             const colorClass = [...f.el.classList].find(c => /^p\d+$/.test(c));
-            f.dots = [];
             for (let i = 1; i <= TRAIL_DOTS; i++) {
                 const c = document.createElementNS(SVGNS, 'circle');
                 c.setAttribute('class', 'trail-dot ' + colorClass);
@@ -265,6 +246,18 @@
                 `C ${cx - rx} ${cy - k * ry}, ${cx - k * rx} ${cy - ry}, ${cx} ${cy - ry} Z`;
         }
 
+        // measure the path once: one point per pixel, so no heavy math every frame
+        function sampleLoop(path) {
+            const len = path.getTotalLength();
+            const n = Math.max(1, Math.ceil(len));
+            const pts = new Array(n);
+            for (let i = 0; i < n; i++) {
+                const q = path.getPointAtLength(len * i / n);
+                pts[i] = { x: q.x, y: q.y };
+            }
+            return { pts, n };
+        }
+
         function buildSky() {
             const w = sky.clientWidth, h = sky.clientHeight;
             sky.setAttribute('viewBox', `0 0 ${w} ${h}`);
@@ -275,7 +268,6 @@
             const cx = m.left - s.left + m.width / 2;
             const cy = m.top - s.top + m.height / 2;
 
-            // ellipses that wrap around the block (x1.42 reaches its corners, + extra space)
             const rx1 = Math.min(m.width / 2 * 1.42 + 40, w / 2 - 20);
             const ry1 = Math.min(m.height / 2 * 1.42 + 40, h / 2 - 20);
             const rx2 = Math.min(rx1 + 50, w / 2 - 20);
@@ -284,34 +276,53 @@
             loop1.setAttribute('d', ellipsePath(cx, cy, rx1, ry1));
             loop2.setAttribute('d', ellipsePath(cx, cy, rx2, ry2));
 
-            skyPlanes.forEach(f => f.len = f.path.getTotalLength());
+            tables.loop1 = sampleLoop(loop1);
+            tables.loop2 = sampleLoop(loop2);
+            skyPlanes.forEach(f => f.table = tables[f.route]);
         }
 
+        let skyRaf = 0, lastDraw = 0;
+
         function flySky(now) {
+            if (!reduceMotion) skyRaf = requestAnimationFrame(flySky);
+            if (isMobile && now - lastDraw < 33) return;   // about 30fps on phones
+            lastDraw = now;
+
             skyPlanes.forEach(f => {
+                const { pts, n } = f.table;
                 const p = reduceMotion ? f.offset : ((now / f.dur) + f.offset) % 1;
-                const l = f.len * p;
-                const pt = f.path.getPointAtLength(l);
-                const a = f.path.getPointAtLength(Math.max(l - 1, 0));
-                const b = f.path.getPointAtLength(Math.min(l + 1, f.len));
+                const i = Math.floor(p * n) % n;
+                const pt = pts[i];
+                const a = pts[(i - 3 + n) % n], b = pts[(i + 3) % n];
                 const angle = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
                 f.el.setAttribute('transform', `translate(${pt.x} ${pt.y}) rotate(${angle})`);
 
-                f.dots.forEach((c, i) => {
-                    let d = l - (i + 1) * TRAIL_GAP;
-                    d = ((d % f.len) + f.len) % f.len;
-                    const q = f.path.getPointAtLength(d);
+                f.dots.forEach((c, k) => {
+                    const q = pts[(((i - (k + 1) * TRAIL_GAP) % n) + n) % n];
                     c.setAttribute('cx', q.x);
                     c.setAttribute('cy', q.y);
                 });
             });
-            if (!reduceMotion) requestAnimationFrame(flySky);
         }
 
-        buildSky();
-        window.addEventListener('resize', buildSky);
+        function startSky() {
+            cancelAnimationFrame(skyRaf);
+            skyRaf = requestAnimationFrame(flySky);
+        }
+
+        function stopSky() {
+            cancelAnimationFrame(skyRaf);
+        }
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(buildSky, 150);   // don't rebuild on every tiny resize
+        });
         window.addEventListener('load', buildSky);
-        requestAnimationFrame(flySky);
+
+        buildSky();
+        startSky();
     </script>
 </body>
 
