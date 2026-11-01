@@ -543,6 +543,7 @@ body.page-leaving .container-fluid {
         position: absolute;
         left: 4%;
         bottom: 18%;
+        display: none;
     }
 
     .image-5 {
@@ -551,8 +552,8 @@ body.page-leaving .container-fluid {
     top: 5%; */
 
         position: absolute;
-        right: 55%;
-        bottom: 2%;
+        right: 60%;
+        bottom: 15%;
 
         /* position: absolute;
     left: 15%;
