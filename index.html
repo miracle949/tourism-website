@@ -47,6 +47,11 @@
                 </g>
             </g>
         </svg>
+        <img src="1.png" class="image image-1" alt="">
+        <img src="2.png" class="image image-2" alt="">
+        <img src="3.png" class="image image-3" alt="">
+        <img src="4.png" class="image image-4" alt="">
+        <img src="5.png" class="image image-5" alt="">
         <main>
             <h2>The Tourism Explorer</h2>
             <p>Discover amazing destinations and explore the wonders of the world!</p>
@@ -246,6 +251,40 @@
                 `C ${cx - rx} ${cy - k * ry}, ${cx - k * rx} ${cy - ry}, ${cx} ${cy - ry} Z`;
         }
 
+        // push the plane path out of the images, then smooth it so it curves around them
+        function avoidImages(pts) {
+            const s = sky.getBoundingClientRect();
+            const pad = 25;
+            const rects = [...document.querySelectorAll('.image')].map(img => {
+                const r = img.getBoundingClientRect();
+                return { l: r.left - s.left - pad, t: r.top - s.top - pad, r: r.right - s.left + pad, b: r.bottom - s.top + pad };
+            });
+
+            pts.forEach(p => {
+                rects.forEach(o => {
+                    if (p.x > o.l && p.x < o.r && p.y > o.t && p.y < o.b) {
+                        const dl = p.x - o.l, dr = o.r - p.x, dt = p.y - o.t, db = o.b - p.y;
+                        const m = Math.min(dl, dr, dt, db);
+                        if (m === dl) p.x = o.l;
+                        else if (m === dr) p.x = o.r;
+                        else if (m === dt) p.y = o.t;
+                        else p.y = o.b;
+                    }
+                });
+            });
+
+            // smooth the path (circular moving average)
+            const n = pts.length, k = 25;
+            return pts.map((_, i) => {
+                let x = 0, y = 0;
+                for (let j = -k; j <= k; j++) {
+                    const q = pts[(i + j + n) % n];
+                    x += q.x; y += q.y;
+                }
+                return { x: x / (2 * k + 1), y: y / (2 * k + 1) };
+            });
+        }
+
         // measure the path once: one point per pixel, so no heavy math every frame
         function sampleLoop(path) {
             const len = path.getTotalLength();
@@ -255,7 +294,7 @@
                 const q = path.getPointAtLength(len * i / n);
                 pts[i] = { x: q.x, y: q.y };
             }
-            return { pts, n };
+            return { pts: avoidImages(pts), n };
         }
 
         function buildSky() {

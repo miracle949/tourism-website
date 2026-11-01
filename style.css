@@ -37,6 +37,57 @@
     overflow: hidden;
 }
 
+.image {
+    position: absolute;
+    width: 182px;
+    height: 142px;
+}
+
+.image-1 {
+    position: absolute;
+    left: 15%;
+    top: 30%;
+
+    /* position: absolute;
+    right: 25%;
+    bottom: 5%; */
+}
+
+.image-2 {
+    position: absolute;
+    right: 24%;
+    top: 5%;
+
+    /* position: absolute;
+    right: 25%;
+    bottom: 5%; */
+}
+
+.image-3 {
+    position: absolute;
+    right: 10%;
+    bottom: 30%;
+}
+
+.image-4 {
+    position: absolute;
+    left: 10%;
+    bottom: 5%;
+}
+
+.image-5 {
+    /* position: absolute;
+    right: 24%;
+    top: 5%; */
+
+    position: absolute;
+    right: 25%;
+    bottom: 5%;
+
+    /* position: absolute;
+    left: 15%;
+    top: 30%; */
+}
 
 .container-fluid main {
     position: relative;
@@ -332,7 +383,8 @@ body.page-leaving .container-fluid {
 
 .sky .trail {
     fill: none;
-    stroke: none;   /* the loop is only a path for the planes, not drawn */
+    stroke: none;
+    /* the loop is only a path for the planes, not drawn */
 }
 
 .sky .sky-plane {
@@ -384,7 +436,30 @@ body.page-leaving .container-fluid {
     }
 }
 
+@media only screen and (max-width: 1200px) {
+    .blob-pink {
+        top: -160px;
+        left: -140px;
+    }
+
+    .blob-aqua {
+        bottom: -140px;
+        right: -110px;
+    }
+}
+
 @media only screen and (max-width: 500px) {
+
+    .container-fluid {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100dvh;
+        background-color: var(--vanilla-cream);
+        position: relative;
+        overflow: hidden;
+    }
+
     .modal {
         padding: 1.5rem 1rem 1.5rem;
     }
@@ -397,9 +472,7 @@ body.page-leaving .container-fluid {
         padding: 14px 16px;
         gap: 14px;
     }
-}
 
-@media only screen and (max-width: 500px) {
     .blob-pink {
         top: -150px;
         left: -100px;
@@ -422,5 +495,67 @@ body.page-leaving .container-fluid {
 
     .modal-close {
         right: 7px;
+    }
+
+    .blob-pink {
+        top: -230px;
+        left: -130px;
+    }
+
+    .blob-aqua {
+        bottom: -150px;
+        right: -100px;
+    }
+
+    .image {
+        position: absolute;
+        width: 142px;
+        height: 102px;
+    }
+
+    .image-1 {
+        position: absolute;
+        left: 6%;
+        top: 15%;
+
+        /* position: absolute;
+    right: 25%;
+    bottom: 5%; */
+    }
+
+    .image-2 {
+        position: absolute;
+        right: 5%;
+        top: 15%;
+
+        /* position: absolute;
+    right: 25%;
+    bottom: 5%; */
+    }
+
+    .image-3 {
+        position: absolute;
+        right: 5%;
+        bottom: 18%;
+    }
+
+    .image-4 {
+        position: absolute;
+        left: 4%;
+        bottom: 18%;
+    }
+
+    .image-5 {
+        /* position: absolute;
+    right: 24%;
+    top: 5%; */
+
+        position: absolute;
+        right: 55%;
+        bottom: 2%;
+
+        /* position: absolute;
+    left: 15%;
+    top: 30%; */
     }
 }

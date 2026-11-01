@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Introduction</title>
     <script>
         // the girl intro only plays when coming from index.html (Get Started), not on reload
         document.documentElement.classList.toggle('skip-intro', sessionStorage.getItem('fromHome') !== '1');
@@ -28,6 +28,10 @@
             overflow-x: none;
         }
 
+        [hidden] {
+            display: none !important;
+        }
+
         :root {
             --vanilla-cream: #FFF9EF;
             /* main background */
@@ -42,6 +46,9 @@
             --ocean-blue: #F4A5C5;
             /* primary buttons, loader bar, plane */
             --border: rgba(0, 100, 200, 0.18);
+            --tint-pink: rgba(244, 165, 197, 0.28);
+            --tint-aqua: rgba(169, 203, 229, 0.32);
+            --tint-green: rgba(200, 221, 181, 0.42);
         }
 
         .container-fluid {
@@ -53,27 +60,26 @@
             padding: 1.8rem;
         }
 
+        .container-fluid.lessons-mode {
+            align-items: flex-start;
+        }
+
+        /* ---------- Tour girl intro ---------- */
         .parent-box {
             display: flex;
             gap: 1rem;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
         .parent-box .box {
             width: 100px;
             height: 170px;
-            /* border: 1px solid black; */
             background-image: url('tour-girl.png');
             background-position: center;
             background-size: cover;
             background-repeat: no-repeat;
-        }
-
-        .parent-box .message {
-            width: 310px;
-            height: 130px;
-            background-color: white;
-            border-radius: 10px;
-            padding: 1rem;
+            opacity: 0;
+            animation: slideInGirl 0.7s ease-out 0.2s forwards;
         }
 
         .parent-box .message {
@@ -83,6 +89,9 @@
             border-radius: 10px;
             padding: 1rem;
             font-size: 13.5px;
+            opacity: 0;
+            transform-origin: left center;
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.9s forwards;
         }
 
         @keyframes slideInGirl {
@@ -109,98 +118,32 @@
             }
         }
 
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
         .sub-parent-box {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
 
-        .sub-parent-box .air-plane {
-            width: 100%;
-            opacity: 0;
-            animation: fadeInBox 0.4s ease 1.5s forwards;
-        }
-
-        .air-plane svg {
-            display: block;
-            width: 100%;
-            height: auto;
-            overflow: visible;
-        }
-
-        .air-plane .curve {
-            fill: none;
-            stroke: var(--ocean-blue);
-            stroke-width: 2.5;
-            stroke-linecap: round;
-            stroke-dasharray: 1 3;
-            animation: revealLine 2s ease-in-out 1.6s forwards;
-            clip-path: inset(0 100% 0 0);
-        }
-
-        @keyframes revealLine {
-            to {
-                clip-path: inset(0 0 0 0);
-            }
-        }
-
-        .air-plane .plane {
-            fill: var(--ocean-blue);
-        }
-
-        @keyframes drawLine {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        /* .air-plane .line {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 0;
-            border-top: 2px dashed var(--ocean-blue);
-            transform: translateY(-50%);
-            animation: drawLine 2s ease-in-out 1.6s forwards;
-        }
-
-        .air-plane .plane {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            font-size: 22px;
-            color: var(--ocean-blue);
-            transform: translateY(-50%);
-            animation: flyPlane 2s ease-in-out 1.6s forwards;
-        } */
-
-        @keyframes fadeInBox {
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* @keyframes drawLine {
-            to {
-                width: 100%;
-            }
-        }
-
-        @keyframes flyPlane {
-            to {
-                left: calc(100% - 24px);
-            }
-        } */
-
-        .sub-parent-box .air-plane.leaving {
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
         .parent-box .right-box {
             display: inline-flex;
             flex-direction: column;
             gap: 1rem;
+        }
+
+        .parent-box .right-box p {
+            color: var(--soft-charcoal);
         }
 
         .parent-box .right-box button {
@@ -215,48 +158,20 @@
             justify-content: center;
             align-items: center;
             gap: 0.3rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0s linear 0.4s;
         }
 
         .parent-box .right-box button .fa {
             font-size: 12px;
         }
 
-        .parent-box .box {
-            opacity: 0;
-            animation: slideInGirl 0.7s ease-out 0.2s forwards;
-        }
-
-        .parent-box .message {
-            opacity: 0;
-            transform-origin: left center;
-            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.9s forwards;
-        }
-
-        .parent-box .right-box button {
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0s linear 0.4s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .parent-box .right-box p {
-            color: var(--soft-charcoal);
-        }
-
         .parent-box .right-box button.show {
             opacity: 1;
             visibility: visible;
             transition: opacity 0.4s ease, visibility 0s linear 0s;
-            display: flex;
-            align-items: center;
-        }
-
-        .parent-box {
-            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
         .parent-box.leaving {
@@ -268,65 +183,664 @@
             display: none;
         }
 
-        .tourism-intro {
+        /* ---------- Lessons ---------- */
+        .lessons {
             display: none;
-            width: min(560px, 100%);
-            padding: 2rem;
-            background-color: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(107, 81, 71, 0.15);
-            text-align: center;
+            width: min(1080px, 100%);
+            min-width: 0;
             color: var(--soft-charcoal);
         }
 
-        .tourism-intro.show {
+        .lessons.show {
             display: block;
             opacity: 0;
-            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: fadeUp 0.5s ease forwards;
         }
 
-        .tourism-intro h2 {
-            font-size: 30px;
-            margin-bottom: 0.8rem;
+        .lessons h2,
+        .lessons h3,
+        .lessons h4 {
+            font-weight: 400;
         }
 
-        .tourism-intro>p {
+        .lessons p,
+        .lessons li {
+            line-height: 1.75;
+        }
+
+        /* highlighter-style emphasis (the font only has one weight) */
+        .lessons b {
+            font-weight: 400;
+            background: linear-gradient(transparent 58%, rgba(244, 165, 197, 0.5) 58%);
+        }
+
+        .hub-head {
+            text-align: center;
+            margin: 0.6rem 0 1.8rem;
+        }
+
+        .hub-head h2 {
+            font-size: 34px;
+            line-height: 1.2;
+        }
+
+        .hub-head p {
             font-size: 14.5px;
-            line-height: 1.7;
+            margin-top: 0.4rem;
         }
 
-        .tourism-points {
+        .module-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
-            margin-top: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 20px;
         }
 
-        .tourism-points .point {
-            padding: 16px 12px;
-            background-color: var(--vanilla-cream);
+        .mod-card {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            background: #ffffff;
+            border: none;
+            border-radius: 26px;
+            overflow: hidden;
+            cursor: pointer;
+            color: var(--soft-charcoal);
+            /* box-shadow: 0 14px 30px rgba(107, 81, 71, 0.12); */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .mod-card:hover,
+        .mod-card:focus-visible {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 36px rgba(107, 81, 71, 0.18);
+        }
+
+        .mod-top {
+            background: var(--c);
+            padding: 20px 22px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mod-num {
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 4px 14px;
+        }
+
+        .mod-count {
+            font-size: 12.5px;
+        }
+
+        .mod-body {
+            padding: 20px 22px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .mod-subject {
+            font-size: 12.5px;
+            opacity: 0.8;
+        }
+
+        .mod-body h3 {
+            font-size: 19px;
+            line-height: 1.35;
+        }
+
+        .mod-teacher {
+            font-size: 12.5px;
+            opacity: 0.8;
+        }
+
+        .mod-desc {
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: 0.85;
+        }
+
+        .mod-go {
+            margin-top: auto;
+            align-self: flex-start;
+            padding: 9px 22px;
+            border-radius: 28px;
+            background: var(--pastel-pink);
+            font-size: 13.5px;
+        }
+
+        .back-btn,
+        .pager button {
+            font-size: 13.5px;
+            border-radius: 28px;
+            padding: 10px 22px;
+            cursor: pointer;
+            border: 2px solid var(--pastel-pink);
+            background: #ffffff;
+            color: var(--soft-charcoal);
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+
+        .back-btn:hover,
+        .pager button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            background: var(--tint-pink);
+        }
+
+        .pager button.next {
+            background: var(--pastel-pink);
+        }
+
+        .pager button:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .reader-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px 22px;
+            margin-bottom: 1.2rem;
+        }
+
+        .reader-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .badge {
+            flex: none;
+            width: 54px;
+            height: 54px;
             border-radius: 18px;
-        }
-
-        .tourism-points .point .fa {
+            display: grid;
+            place-items: center;
             font-size: 22px;
-            color: var(--pastel-pink);
-            margin-bottom: 8px;
+            background: var(--c);
         }
 
-        .tourism-points .point h4 {
+        .reader-title h2 {
+            font-size: 22px;
+            line-height: 1.25;
+        }
+
+        .reader-title p {
+            font-size: 12.5px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .reader-body {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .topic-nav {
+            position: sticky;
+            top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 12px;
+            box-shadow: 0 10px 24px rgba(107, 81, 71, 0.1);
+        }
+
+        .topic-nav button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+            border: none;
+            background: transparent;
+            border-radius: 14px;
+            padding: 9px 10px;
+            font-size: 13px;
+            line-height: 1.35;
+            color: var(--soft-charcoal);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .topic-nav button:hover {
+            background: var(--tint-pink);
+        }
+
+        .topic-nav button .n {
+            flex: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            background: var(--vanilla-cream);
+        }
+
+        .topic-nav button.active {
+            background: var(--pastel-pink);
+        }
+
+        .topic-nav button.active .n {
+            background: var(--soft-charcoal);
+            color: #ffffff;
+        }
+
+        .topic-panel {
+            background: #ffffff;
+            border-radius: 26px;
+            padding: 1.8rem;
+            box-shadow: 0 14px 30px rgba(107, 81, 71, 0.12);
+            min-width: 0;
+        }
+
+        .progress {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            margin-bottom: 1.1rem;
+        }
+
+        .progress .bar {
+            flex: 1;
+            height: 8px;
+            background: var(--vanilla-cream);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress .bar i {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: var(--pastel-pink);
+            border-radius: 8px;
+            transition: width 0.35s ease;
+        }
+
+        .topic-panel>h3 {
+            font-size: 26px;
+            line-height: 1.25;
+            margin-bottom: 1rem;
+        }
+
+        #tBody {
+            animation: fadeUp 0.35s ease;
+        }
+
+        #tBody p {
+            font-size: 14.5px;
+            margin-bottom: 0.9rem;
+        }
+
+        #tBody .sub {
+            font-size: 17px;
+            margin: 1.4rem 0 0.7rem;
+        }
+
+        .callout {
+            background: var(--vanilla-cream);
+            border-left: 5px solid var(--pastel-pink);
+            border-radius: 6px 18px 18px 6px;
+            padding: 14px 18px;
+            margin: 0 0 1.1rem;
+        }
+
+        .callout .label {
+            display: inline-block;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: var(--pastel-pink);
+            border-radius: 12px;
+            padding: 2px 10px;
+            margin-bottom: 6px;
+        }
+
+        .callout p {
+            margin: 0;
+        }
+
+        ul.dots,
+        ol.numbered {
+            list-style: none;
+            margin: 0 0 1rem;
+            display: grid;
+            gap: 8px;
+        }
+
+        ul.dots li {
+            position: relative;
+            padding-left: 24px;
+            font-size: 14.5px;
+        }
+
+        ul.dots li::before {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 0.72em;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--pastel-pink);
+        }
+
+        ol.numbered {
+            counter-reset: n;
+        }
+
+        ol.numbered li {
+            counter-increment: n;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            background: var(--vanilla-cream);
+            border-radius: 18px;
+            padding: 12px 16px;
+            font-size: 14.5px;
+        }
+
+        ol.numbered li::before {
+            content: counter(n);
+            flex: none;
+            width: 30px;
+            height: 30px;
+            margin-top: 1px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--soft-charcoal);
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .mini {
+            background: var(--vanilla-cream);
+            border-radius: 18px;
+            padding: 14px 16px;
+            border-top: 4px solid var(--c, var(--pastel-pink));
+        }
+
+        .mini h4 {
             font-size: 15px;
             margin-bottom: 4px;
         }
 
-        .tourism-points .point p {
-            font-size: 12px;
+        #tBody .mini p {
+            font-size: 13.5px;
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 1rem;
+        }
+
+        .panel {
+            border-radius: 20px;
+            padding: 16px 18px 8px;
+            background: var(--bg);
+        }
+
+        .panel h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .chip {
+            font-size: 13px;
+            background: var(--bg, var(--tint-pink));
+            border-radius: 20px;
+            padding: 6px 14px;
+        }
+
+        .dept {
+            background: var(--vanilla-cream);
+            border-radius: 18px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .dept summary {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            font-size: 15.5px;
+        }
+
+        .dept summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .dept summary::after {
+            content: "+";
+            flex: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--pastel-pink);
+        }
+
+        .dept[open] summary::after {
+            content: "\2212";
+        }
+
+        .dept-body {
+            padding: 0 18px 8px;
+        }
+
+        .dept-body h4 {
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin: 6px 0 6px;
+            opacity: 0.8;
+        }
+
+        .reception {
+            text-align: center;
+            margin: 0.4rem 0 1rem;
+        }
+
+        .reception .core {
+            display: inline-block;
+            background: var(--soft-charcoal);
+            color: #ffffff;
+            border-radius: 28px;
+            padding: 12px 34px;
+            font-size: 17px;
+            letter-spacing: 0.06em;
+        }
+
+        .reception .arrows {
+            font-size: 22px;
+            margin: 4px 0;
+        }
+
+        .reception .chips {
+            justify-content: center;
+        }
+
+        .cycle {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .stage {
+            background: var(--vanilla-cream);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .stage .head {
+            background: var(--c);
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .stage .head span {
+            flex: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #ffffff;
+            font-size: 13px;
+        }
+
+        .stage ul {
+            padding: 12px 14px 6px;
+            margin: 0;
+        }
+
+        .stage ul li {
+            font-size: 13px;
             line-height: 1.5;
+        }
+
+        .source {
+            font-size: 12px;
+            opacity: 0.75;
+        }
+
+        .task {
+            border: 2px dashed var(--pastel-pink);
+            border-radius: 22px;
+            padding: 18px 20px 8px;
+            margin-bottom: 1rem;
+            background: var(--vanilla-cream);
+        }
+
+        .task .label {
+            display: inline-block;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: var(--pastel-pink);
+            border-radius: 12px;
+            padding: 2px 10px;
+            margin-bottom: 6px;
+        }
+
+        .task h3 {
+            font-size: 19px;
+            margin-bottom: 0.7rem;
+        }
+
+        .task ol.numbered li {
+            background: #ffffff;
+        }
+
+        .pager {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 1.6rem;
+            padding-top: 1.2rem;
+            border-top: 2px dashed var(--vanilla-cream);
+        }
+
+        @media only screen and (max-width: 820px) {
+            .reader-body {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .topic-nav {
+                position: sticky;
+                top: 0;
+                z-index: 5;
+                flex-direction: row;
+                overflow-x: auto;
+                border-radius: 18px;
+                padding: 8px;
+                gap: 6px;
+                scrollbar-width: none;
+            }
+
+            .topic-nav::-webkit-scrollbar {
+                display: none;
+            }
+
+            .topic-nav button {
+                flex: none;
+                white-space: nowrap;
+            }
+
+            .cycle {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @media only screen and (max-width: 600px) {
             .container-fluid {
                 min-height: 100dvh;
+                padding: 1.2rem 1.5rem;
+            }
+
+            .hub-head h2 {
+                font-size: 28px;
+            }
+
+            .topic-panel {
+                padding: 1.3rem 1.1rem;
+                border-radius: 22px;
+            }
+
+            .topic-panel>h3 {
+                font-size: 22px;
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .cycle {
+                grid-template-columns: 1fr;
+            }
+
+            .pager button {
+                padding: 10px 16px;
             }
         }
 
@@ -336,17 +850,9 @@
                 gap: 0.7rem;
             }
 
-            .parent-box .box {
-                width: 100px;
-                height: 170px;
-                /* border: 1px solid black; */
-            }
-
             .parent-box .message {
                 width: 260px;
                 height: 120px;
-                /* height: 80px; */
-                background-color: white;
             }
 
             .parent-box .message p {
@@ -354,17 +860,7 @@
             }
 
             .parent-box .right-box button {
-                padding: 7px 20px;
-                border-radius: 10px;
-                background-color: var(--ocean-blue);
-                color: #ffffff;
-                border: none;
                 font-size: 11.5px;
-                width: 130px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 0.3rem;
             }
 
             .parent-box .right-box button .fa {
@@ -376,7 +872,7 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid" id="page">
         <div class="sub-parent-box">
             <div class="parent-box">
                 <div class="box"></div>
@@ -389,36 +885,56 @@
             </div>
         </div>
 
-        <section class="tourism-intro" id="tourismIntro">
-            <h2>What is Tourism?</h2>
-            <p>Tourism is the activity of traveling to and staying in places away from home to relax, explore, learn, or
-                enjoy new experiences. It brings people together with different places, cultures, and traditions.</p>
+        <section class="lessons" id="lessons">
+            <!-- module list -->
+            <div id="hubView">
+                <div class="hub-head">
+                    <h2>Your Lessons</h2>
+                    <p>Pick a module to start learning.</p>
+                </div>
+                <div class="module-grid" id="moduleGrid"></div>
+            </div>
 
-            <div class="tourism-points">
-                <div class="point">
-                    <i class="fa fa-globe"></i>
-                    <h4>Travel</h4>
-                    <p>Visiting new places and destinations.</p>
+            <!-- lesson reader -->
+            <div id="readerView" hidden>
+                <div class="reader-top">
+                    <button class="back-btn" id="backBtn">&larr; All modules</button>
+                    <div class="reader-title">
+                        <span class="badge" id="rBadge"></span>
+                        <div>
+                            <h2 id="rTitle"></h2>
+                        </div>
+                    </div>
                 </div>
-                <div class="point">
-                    <i class="fa fa-camera"></i>
-                    <h4>Culture</h4>
-                    <p>Discovering local food, art, and traditions.</p>
-                </div>
-                <div class="point">
-                    <i class="fa fa-users"></i>
-                    <h4>Community</h4>
-                    <p>Creating jobs and supporting local people.</p>
+
+                <div class="reader-body">
+                    <nav class="topic-nav" id="topicNav" aria-label="Lessons in this module"></nav>
+                    <article class="topic-panel">
+                        <div class="progress">
+                            <span id="rCount"></span>
+                            <div class="bar"><i id="rBar"></i></div>
+                        </div>
+                        <h3 id="tTitle"></h3>
+                        <div id="tBody"></div>
+                        <div class="pager">
+                            <button id="prevBtn">&larr; Previous</button>
+                            <button id="nextBtn" class="next">Next &rarr;</button>
+                        </div>
+                    </article>
                 </div>
             </div>
         </section>
     </div>
 
     <script>
+        /* ================= girl intro ================= */
         const text = "Welcome to our tourism website! Discover beautiful destinations, plan your perfect trip, and explore the best places with us. Let me be your guide!";
         const el = document.getElementById('typed-text');
         const btn = document.querySelector('.right-box button');
         const parentBox = document.querySelector('.parent-box');
+        const subParent = document.querySelector('.sub-parent-box');
+        const page = document.getElementById('page');
+        const lessonsEl = document.getElementById('lessons');
         let i = 0;
 
         function type() {
@@ -431,23 +947,471 @@
             }
         }
 
-        const subParent = document.querySelector('.sub-parent-box');
-        const tourism = document.getElementById('tourismIntro');
-        const skipIntro = document.documentElement.classList.contains('skip-intro');
+        function showLessons() {
+            subParent.style.display = 'none';
+            page.classList.add('lessons-mode');
+            lessonsEl.classList.add('show');
+        }
 
-        if (skipIntro) {
-            tourism.classList.add('show');   // reload or direct visit: go straight to the introduction
+        if (document.documentElement.classList.contains('skip-intro')) {
+            showLessons();   // reload or direct visit: go straight to the lessons
         } else {
             setTimeout(type, 1500);
         }
 
         btn.addEventListener('click', () => {
             parentBox.classList.add('leaving');
-            setTimeout(() => {
-                subParent.style.display = 'none';
-                tourism.classList.add('show');
-            }, 500);
+            setTimeout(showLessons, 500);
         });
+
+        /* ================= lesson content ================= */
+        const h = {
+            p: t => `<p>${t}</p>`,
+            sub: t => `<h3 class="sub">${t}</h3>`,
+            callout: (label, t) => `<div class="callout"><span class="label">${label}</span><p>${t}</p></div>`,
+            list: items => `<ul class="dots">${items.map(x => `<li>${x}</li>`).join('')}</ul>`,
+            steps: items => `<ol class="numbered">${items.map(x => `<li><div>${x}</div></li>`).join('')}</ol>`,
+            cards: (items, color) => `<div class="cards">${items.map(([t, d]) => `<div class="mini"${color ? ` style="--c:${color}"` : ''}><h4>${t}</h4><p>${d}</p></div>`).join('')}</div>`,
+            chips: (items, bg) => `<div class="chips">${items.map(x => `<span class="chip"${bg ? ` style="--bg:${bg}"` : ''}>${x}</span>`).join('')}</div>`,
+            task: (title, body) => `<div class="task"><span class="label">Activity</span><h3>${title}</h3>${body}</div>`,
+            dept: (name, does, liaise) => `<details class="dept"><summary>${name}</summary><div class="dept-body"><h4>What they do</h4><p>${does}</p>${liaise ? `<h4>Liaising with the Front Office</h4>${h.list(liaise)}` : ''}</div></details>`
+        };
+
+        const PINK = 'var(--pastel-pink)', AQUA = 'var(--pastel-aqua)', GREEN = 'var(--pastel-green)';
+
+        const MODULES = [
+            /* ---------------- MODULE 3 ---------------- */
+            {
+                num: 3, color: PINK, subject: 'Front Office NCII',
+                title: 'Liaising with Other Departments', teacher: 'Ms. Ruth F. Cesista',
+                desc: 'Learn how the Front Office works with other hotel departments and follows the guest cycle.',
+                topics: [
+                    {
+                        title: 'Objectives',
+                        html: h.sub('By the end of this module, you should be able to:') + h.steps([
+                            'Understand how front office departments <b>liaise and communicate</b> with other departments in the hotel.',
+                            'Understand the overview of the <b>guest cycle</b>.'
+                        ])
+                    },
+                    {
+                        title: 'Hotel Departments',
+                        html: h.p('There are a number of departments in a large hotel. Some are concerned with <b>raising revenue</b>, or earning money for the hotel. Others fulfill the <b>management and support</b> functions of the hotel.') +
+                            `<div class="two-col">
+                                <div class="panel" style="--bg:var(--tint-pink)"><h4>Revenue-raising departments</h4>${h.list([
+                                'Rooms division', 'Food and beverage division', 'Recreational facilities', 'Guest laundry / dry cleaning', 'Business centre, etc.'])}</div>
+                                <div class="panel" style="--bg:var(--tint-aqua)"><h4>Management and support departments</h4>${h.list([
+                                    'Sales and marketing', 'Accounting / finance', 'Security', 'Engineering / maintenance', 'Premises management', 'Information technology (IT)', 'HR / personnel'])}</div>
+                            </div>` +
+                            h.callout('Remember', 'The Front Office is the <b>first and last point</b> which interacts with the visitor, guest or client. That is why it has to work closely with every other department.')
+                    },
+                    {
+                        title: 'Liaising with Other Departments',
+                        html: h.p('Tap a department to see what it does and how it works together with the Front Office (FO).') +
+                            h.dept('Food and Beverage (F&amp;B)', 'Purchasing, preparation and provision of food, drink and catering services to guests: via banqueting (function catering); restaurant; bar; perhaps coffee shops; "floor service" (refreshments delivered to the lounge or pool area, say); and room service.', [
+                                'F&amp;B needs <b>occupancy forecasts</b> to estimate provisions requirements',
+                                'F&amp;B needs <b>confirmed arrival/departure info</b> to control guest credit',
+                                'FO needs info on food/drinks charges to add to guest bills',
+                                'FO may take or refer restaurant bookings',
+                                'F&amp;B takings will be "paid in" to the cashier for accounting and banking'
+                            ]) +
+                            h.dept('Housekeeping', 'The management of guest rooms and cleanliness of all public areas of the hotel; cleaning, making-up and supplying of rooms (e.g. with soap, towels, mini-bar stocks); preparing housekeeping / room status reports.', [
+                                'Housekeeping needs <b>arrival/departure info</b> to plan its staff rosters and room cleaning schedules',
+                                'Housekeeping needs info about special requests, complaints or urgent room preparation requirements',
+                                'FO needs up-to-date info on rooms (occupied, vacant but not ready, out of order, ready to let) to update room status/availability records',
+                                'FO relies on the housekeeper\'s report'
+                            ]) +
+                            h.dept('Maintenance', 'The maintenance and operation of all machinery and equipment (e.g. lighting, heating, air conditioning); carrying out minor repairs and works (carpentry, upholstery, plumbing, electrics).', [
+                                'Maintenance needs info about <b>repair / replacement requirements</b>',
+                                'FO needs confirmation that guest repair requests have been seen to',
+                                'FO needs up-to-date info on out of order rooms (closed for maintenance) to update room availability records'
+                            ]) +
+                            h.dept('Accounts', 'Monitoring, recording, checking and reporting of all financial activities of the hotel; processing and banking takings; processing of payrolls; preparing internal reports, audits and financial statements, compiling statistics.') +
+                            h.dept('Security', 'The safety and security of guests, visitors and employees: patrolling premises; monitoring surveillance equipment; handling security incidents; liaising with police if required.', [
+                                'Security needs to be alerted to suspicious persons or activities, reports of security breach, etc.',
+                                'FO needs warnings (e.g. to evacuate premises) and incident reports (for future planning)',
+                                'Security helps with special needs guests and may administer first aid',
+                                'Deals with problems with guest safes, guests locked out of rooms and opening of inter-connecting doors',
+                                'Deals with lost property'
+                            ]) +
+                            h.dept('Sales and Marketing', 'Generating new business and increased sales for the hotel: sales of rooms, facilities and services; advertising; promotions; PR and publicity; winning corporate, tour operator and agency business; designing the web site; etc.', [
+                                'Sales needs info on <b>room availability</b> to know what rooms to sell',
+                                'Sales needs info on guest types / origins to develop marketing strategy and target key guest segments',
+                                'Sales needs FO support in selling rooms, facilities and services',
+                                'FO needs info on special promotions (e.g. special rates and inclusions) and campaigns (to anticipate increased demand)'
+                            ]) +
+                            h.dept('Human Resources (HR)', 'Recruitment and selection of staff; staff induction and training; performance appraisal; rewards and career planning; employee relations; compliance with employment law.', [
+                                'HR needs info on FO job requirements (for recruitment planning)',
+                                'HR needs info on FO staff performance and training needs, and FO staff problems and concerns',
+                                'FO staff need info on all HR policies and rules, and on training / career opportunities'
+                            ])
+                    },
+                    {
+                        title: 'Flow of Information',
+                        html: h.p('Information flows between the <b>Reception</b> and the other departments and sections of the hotel.') +
+                            `<div class="reception"><div class="core">RECEPTION</div><div class="arrows">&#8645;</div>${h.chips([
+                                'Sales and Marketing', 'Reservation', 'Restaurant', 'Kitchen', 'Accounts', 'Bar', 'Cashier', 'Housekeeping', 'Security', 'Switchboard', 'Concierge / Porters', 'Maintenance'], 'var(--tint-aqua)')}</div>` +
+                            h.sub('Routine reports and notifications from the Front Office') +
+                            h.steps([
+                                'A list of guests currently in residence (the <b>guest index</b>), in alphabetical order, so any staff member can look up a guest or locate their room number',
+                                'A list of <b>anticipated arrivals</b> (based on reservations), group arrivals and VIP / special needs arrivals, so departments can prepare for them',
+                                'A list of <b>amendments to the arrivals list</b> (e.g. last-minute bookings and chance walk-in guests)',
+                                'A list of <b>guest amendments</b>: changes of room number, number of guests, terms and so on, so departments can adjust accordingly',
+                                'A list of <b>anticipated departures</b> (based on booked departure dates) so departments can prepare rooms for re-letting and bills for departing guests',
+                                'A list of <b>amendments to the departures list</b> (e.g. guests extending their stay)',
+                                'A list of guests who have <b>left the hotel</b>, so telephone calls and messages are handled accordingly and rooms are prepared for re-letting'
+                            ]) +
+                            h.sub('Flow of information within front office sections') +
+                            h.cards([
+                                ['Concierge / Enquiries', 'Needs arrivals, departures and current guest lists, to sort incoming guest mail, take messages, give the right keys to the right guests, and take the right baggage to the right rooms.'],
+                                ['Switchboard', 'Needs the current guest list and checked-out guest list, to handle incoming phone calls and charge guests\' calls to the right rooms.'],
+                                ['Reception', 'Needs all the information collected by the reservation section, to prepare for and verify the bookings of arriving guests, maintain room availability records and so on.'],
+                                ['Reservations', 'Needs information on returning guests, compiled by reception, to offer a personalized service.'],
+                                ['Cashier', 'Needs guests\' reservation and check-in information to open a guest bill, charge the correct rate agreed with the guest, confirm payment details and check corporate accounts. May also need guest history records to check that guests have paid their bills in the past, or to identify guests entitled to special discounts.']
+                            ], AQUA)
+                    },
+                    {
+                        title: 'The Guest Cycle',
+                        html: h.p('The guest cycle shows the stages a guest goes through, from the first booking to leaving the hotel, and the front office services at each stage.') +
+                            `<div class="cycle">${[
+                                ['Pre-arrival', PINK, ['Reservations']],
+                                ['Arrival', AQUA, ['Doormen &amp; porters', 'Registration', 'Room assignment', 'Issuing of keys', 'Baggage handling']],
+                                ['Occupancy', GREEN, ['Maintaining guest accounts', 'Mail and information', 'Telephone calls', 'Transportation', 'Safe deposits', 'Currency exchange']],
+                                ['Departure', PINK, ['Check-out', 'Bill settlement', 'Transportation', 'Baggage handling']]
+                            ].map(([name, c, items], n) => `<div class="stage" style="--c:${c}"><div class="head"><span>${n + 1}</span>${name}</div>${h.list(items)}</div>`).join('')}</div>` +
+                            '<p class="source">Source: Baker, Bradley &amp; Huylon, Principles of Hotel Front Office Operations, p. 44</p>'
+                    },
+                    {
+                        title: 'Moment of Truth',
+                        html: h.callout('Definition', 'Each of the stages in the cycle of service represents a <b>"moment of truth"</b>. A moment of truth is the <b>impression</b> created each time the guest experiences "something" in the venue.') +
+                            h.sub('Three kinds of moment of truth') +
+                            h.cards([['Positive', 'The guest is left with a good impression.']], GREEN).replace('</div></div>', '</div></div>') +
+                            `<div class="cards">
+                                <div class="mini" style="--c:${GREEN}"><h4>Positive moment of truth</h4><p>The guest is left with a good impression.</p></div>
+                                <div class="mini" style="--c:${PINK}"><h4>Negative moment of truth</h4><p>The guest is left with a bad impression.</p></div>
+                                <div class="mini" style="--c:${AQUA}"><h4>Neutral moment of truth</h4><p>The guest is neither impressed nor disappointed.</p></div>
+                            </div>` +
+                            h.sub('Our role in the moment of truth') +
+                            h.list([
+                                'The host-guest relationship inherent in all hospitality environments',
+                                'How to do our job well',
+                                'Our venue\'s target markets and the corresponding needs of each segment',
+                                'That all guests are individuals, with individual wants and needs',
+                                'The expectations of our employer'
+                            ])
+                    },
+                    {
+                        title: 'Performance Task',
+                        html: h.task('Handling Room Reservation (PR-3.3.1 / Q3-3.3.1)',
+                            h.p('In handling a reservation, you must be able to practice the proper <b>telephone etiquette</b>.') +
+                            h.steps([
+                                'Take a <b>video</b> of yourself while doing this activity.',
+                                'Make your own <b>dialogue script</b> in taking a reservation through phone.',
+                                'Find a partner. You will act as the <b>reservation agent</b>.'
+                            ])) + h.p('Format: pen and paper for the script. Submit your output as instructed by your teacher.')
+                    }
+                ]
+            },
+
+            /* ---------------- MODULE 4 ---------------- */
+            {
+                num: 4, color: GREEN, subject: 'Housekeeping',
+                title: 'Types and Uses of Different Housekeeping and Front Office Forms', teacher: 'Ms. Ross Caroline Riva',
+                desc: 'Understand housekeeping forms, handling client queries, and common housekeeping problems.',
+                topics: [
+                    {
+                        title: 'Objectives',
+                        html: h.sub('By the end of this module, you should be able to:') + h.steps([
+                            'Describe and explain the use of different types of <b>housekeeping and front office forms</b>.',
+                            'Practice proper handling of <b>clients\' queries</b> through telephone, fax machine, e-mail, etc.',
+                            'Identify <b>common problems</b> related to Housekeeping Services.',
+                            'Observe proper <b>handling of different problems</b> in Housekeeping Services.'
+                        ])
+                    },
+                    {
+                        title: 'Why Forms and Reports Matter',
+                        html: h.callout('Key idea', 'Forms and reports play an important role in managing the housekeeping activities.') +
+                            h.list([
+                                'They serve as <b>evidence</b> in a specific incident, situation and happening.',
+                                'Reports are a very useful method for <b>keeping track</b> of important information.',
+                                'The information in reports can be used to make very <b>important decisions</b> that affect the establishment.'
+                            ])
+                    },
+                    {
+                        title: 'Housekeeping and Front Office Forms',
+                        html: h.p('A housekeeper should be knowledgeable in filling out housekeeping forms, which include:') +
+                            h.chips(['Housekeeping daily assignment checklist', 'Maintenance request form', 'Housekeeping work order form', 'Guestroom cleaning checklist', 'Stock requisition form', 'Lost property report'], 'var(--tint-green)') +
+                            h.sub('Forms in detail') +
+                            h.cards([
+                                ['1. Housekeeping Attendant\'s Daily Assignment Sheet', 'A form used by housekeepers or room attendants to <b>record the tasks done</b> during their shift.'],
+                                ['2. Maintenance Request Form', 'Used whenever there are <b>problems reported by the guest</b> to the housekeeping department.'],
+                                ['3. Housekeeping Work Order Form', 'Used when there are <b>requests for work</b> to be done.'],
+                                ['4. Guest Room Cleaning Checklist', 'Used by the housekeeping supervisor to check, on a daily basis, <b>how the cleaning service</b> for the guest room was done. Samples include the guest room and bathroom cleaning checklists.'],
+                                ['5. Housekeeping Status Report', 'Prepared by the housekeeping department and handed to the <b>front desk</b> to update them on the status of each hotel room. The front desk then assigns rooms to arriving guests based on the occupancy report.']
+                            ], GREEN)
+                    },
+                    {
+                        title: 'Handling Clients\' Queries',
+                        html: h.callout('Why it matters', 'How an employee handles and responds to customer inquiries is crucial to giving <b>quality customer service</b>. If it is done right, clients will keep coming back. If it is done wrong, they will go elsewhere.') +
+                            h.sub('Useful tips in answering a call') +
+                            h.p('The telephone plays a very important role in the hotel industry.') +
+                            h.steps([
+                                'Answer the phone <b>within three rings</b>.',
+                                'Say the <b>name of the hotel</b>, your name, and the customary greetings.',
+                                'Have a <b>pen and paper</b> in hand for documentation.',
+                                '<b>Listen carefully</b> to the details being said by the caller.',
+                                'Make them feel that they have your <b>full attention</b>.',
+                                'Explain the reason if you want to put them <b>on hold</b>. Wait for their response.',
+                                'For a callback, do it in the <b>soonest possible time</b>.',
+                                '<b>Repeat all the details</b>.',
+                                '<b>End the conversation politely</b>.'
+                            ])
+                    },
+                    {
+                        title: 'Common Housekeeping Problems',
+                        html: h.p('The most common problems related to housekeeping are:') +
+                            h.cards([
+                                ['Noise', 'Noise coming from other rooms'],
+                                ['Cleanliness', 'Rooms not cleaned properly'],
+                                ['Amenities', 'Rooms lacking amenities'],
+                                ['Equipment', 'Equipment malfunction'],
+                                ['Laundry', 'Laundry error'],
+                                ['Theft', 'Theft complaint'],
+                                ['Communication', 'Communication problems with hotel staff'],
+                                ['Unusual items', 'Unusual items visible during room servicing']
+                            ], PINK)
+                    },
+                    {
+                        title: 'Activity: Guest Complaints',
+                        html: h.task('How to Handle Guest Complaints (Q1.6.1-1)',
+                            h.p('Pen and paper. Answer the following questions on a separate sheet of bond paper.') +
+                            h.steps([
+                                'Explain how you handle a guest who is <b>angry, upset or dissatisfied</b> by your work.',
+                                'Explain how you would react to a guest who <b>yelled at you</b>.',
+                                'Why is it important to <b>repeat the message / request</b> with the guest?'
+                            ])) + h.p('Submit your output as instructed by your teacher.')
+                    }
+                ]
+            },
+
+            /* ---------------- MODULE 8 ---------------- */
+            {
+                num: 8, color: AQUA, subject: 'TPC9-TMICE',
+                title: 'Event Management', teacher: 'Introduction to Meeting, Incentives, Conference, and Event Management',
+                desc: 'Explore how MICE events are planned and run using the five PMBOK process groups.',
+                topics: [
+                    {
+                        title: 'Objectives and Warm-up',
+                        html: h.callout('CLO1', 'Analyze and evaluate the application of the <b>Project Management Body of Knowledge (PMBOK)</b> framework across the five process groups (Initiating, Planning, Executing, Monitoring &amp; Controlling, and Closing) in managing various MICE events.') +
+                            h.sub('By the end of this module, you should be able to:') + h.steps([
+                                '<b>Describe</b> project management and its importance.',
+                                '<b>Enumerate</b> MICE event management.'
+                            ]) +
+                            h.task('Think, Reflect, and Share!', h.steps([
+                                'What are the samples of Event Management?',
+                                'Share an experience of an event that you have attended.'
+                            ]))
+                    },
+                    {
+                        title: 'What is Event Management?',
+                        html: h.callout('Definition', '<b>Event management</b> is the professional process of planning, organizing, coordinating, and executing various types of gatherings and public or private celebrations. It involves conceptualizing a vision, managing budgets, handling logistics, coordinating vendors, overseeing on-site production, and evaluating outcomes to ensure a successful, seamless experience for attendees.') +
+                            h.sub('What does TMICE stand for?') +
+                            h.chips(['T - Tourism', 'M - Meetings', 'I - Incentives', 'C - Conventions', 'E - Exhibitions'], 'var(--tint-aqua)') +
+                            h.p('In the tourism and hospitality sector, TMICE is also widely referred to simply as <b>MICE</b>.') +
+                            h.callout('Project management', 'The systematic application of knowledge, skills, tools, and techniques to <b>plan, execute, control, and finalize</b> complex business events and travel itineraries. Since TMICE events are temporary, high-budget, time-sensitive, and multi-faceted, <b>every event functions as a standalone project</b>.')
+                    },
+                    {
+                        title: 'Project Management and Its Importance',
+                        html: h.sub('Event management work includes') +
+                            h.list([
+                                'Contacting stakeholders from a multitude of perspectives',
+                                'Conducting market research on attendee demographics and demands',
+                                'Researching rules and regulations related to the country hosting the event',
+                                'Site visits and choosing venues and accommodations',
+                                'Travel arrangements for attendees'
+                            ]) +
+                            h.sub('Why project management is central') +
+                            h.cards([
+                                ['Temporary', 'A project must have a <b>definite beginning and ending period</b> to create a unique product or outcome.'],
+                                ['A methodology', 'It can be used to frame <b>each phase</b> in managing events, with activities that must be planned and executed in a timely manner.'],
+                                ['PMBOK', 'The PMBOK framework of the American National Standards Institute (ANSI) is one of the most accepted frameworks for project management.']
+                            ], AQUA)
+                    },
+                    {
+                        title: 'The PMBOK Framework',
+                        html: h.p('The PMBOK guide of ANSI is generally a <b>process-based framework</b> that requires three important components to achieve desirable results:') +
+                            h.cards([
+                                ['Input', 'Documents, plans, designs, etc.'],
+                                ['Tools and Techniques', 'Mechanisms applied to the input.'],
+                                ['Output', 'Products, etc.']
+                            ], AQUA) +
+                            h.sub('The three components are classified into five project management steps') +
+                            h.steps(['Initiating', 'Planning', 'Executing', 'Monitoring and Controlling', 'Closing'])
+                    },
+                    {
+                        title: '1. Initiating',
+                        html: h.callout('Project initiation', 'The first process group. Here the organizer makes contact with the client and clarifies what the event needs.') +
+                            h.cards([
+                                ['Initial contact with clients', 'Can be made through various methods, with different lead times depending on the characteristics of an event. In organizing <b>corporate meetings and incentive travel programs</b>, organizers use much less time to communicate with clients than for <b>conventions and exhibitions</b>.'],
+                                ['Pre-event meetings', 'After contacting clients, organizers must clarify <b>goals and objectives</b>, size of the event and other requirements. These meetings are also a good opportunity for the client to provide a <b>Request for Proposal (RFP)</b>.']
+                            ], PINK)
+                    },
+                    {
+                        title: '2. Planning',
+                        html: h.callout('Key idea', 'Project planning success depends on the <b>amount and quality of information</b> gathered at project initiation.') +
+                            h.p('<b>Event scope initializing</b> is an opportunity for organizers to gather information on the number of attendees, total area required, number of hotel rooms needed and transportation services required. This is then used to estimate the project\'s scope planning.') +
+                            h.sub('Scope-related plans') +
+                            h.cards([
+                                ['Scope planning', 'The first step. Creates a plan of how the event scope will be defined, verified, controlled and how the Work Breakdown Structure (WBS) will be created.'],
+                                ['Scope defining', 'A statement of what is expected of a particular project to be executed.'],
+                                ['Work breakdown structure (WBS)', 'Breaks the entire event into smaller activities. Serves as a checklist to ensure the completion and quality of each task.'],
+                                ['Scope verification', 'The process of confirming with clients the correctness and completeness of the plan.'],
+                                ['Scope control', 'Allows an organizer to monitor the actual progress of each task compared with what was planned.'],
+                                ['Project scope (cost plan)', 'Known for client expectations. Organizers must compose a cost plan that includes all expected costs and expenditures.']
+                            ], PINK) +
+                            h.sub('Other plans') +
+                            h.cards([
+                                ['Staffing', 'Single out tasks and give each an appropriate due date. Then identify the human resources and competencies needed for on-time completion.'],
+                                ['Quality', 'A quality plan directly dictates the service characteristics that add up to overall client satisfaction. Usually connected to staffing plans.'],
+                                ['Communication', 'Spells out communication among related parties so every activity is done by the due date and at the promised quality. Must include every communication method in case of unforeseen events.'],
+                                ['Risk management', 'Risks and uncertainties such as natural disasters, political turmoil and riots, or as simple as undesirable weather can have a major impact on an event.'],
+                                ['Resources acquisition', 'Core organizers cannot do all the tasks alone. They assign tasks to external service providers or seek resources that cannot be found in-house.'],
+                                ['Schedule', 'Each type of attendee has unique conditions: different arrival times for VIPs, guest speakers and others, or overlapping times when exhibitors can ship in exhibits.']
+                            ], AQUA)
+                    },
+                    {
+                        title: '3. Executing',
+                        html: h.callout('Key idea', 'The success of this phase depends highly on <b>planning accuracy and completeness</b>. During execution, the initial plan is continuously modified based on changing client requests and unexpected events or conditions.') +
+                            h.cards([
+                                ['Information distribution', 'Communication among organizers, clients, staff and service providers. It updates project progress, identifies potential issues with each activity, and aligns expectations and desired outcomes.'],
+                                ['Project administration and modification', 'Factors may change at any time, so organizers must be ready to adjust the initial plan to cope with the actual situation.'],
+                                ['Executing resources acquisition', 'Organizers need a fundamental understanding of the resources acquisition process so they can monitor and evaluate each procuring activity.']
+                            ], GREEN)
+                    },
+                    {
+                        title: '4. Monitoring and Controlling',
+                        html: h.callout('Definition', 'A project management function that involves <b>comparing actual performance with planned performance</b> and taking appropriate corrective actions (or directing others to take them) that will yield the desired outcome when significant differences exist. <i>(PMBOK, ANSI)</i>') +
+                            h.sub('Risk monitoring and controlling') +
+                            h.p('In the planning phase, risk factors are identified based on past experience and available information. New risk factors and challenges may become apparent as the project progresses. Risk meetings are divided into three parts:') +
+                            h.chips(['Risk identification meetings', 'Executive review', 'Project status meetings'], 'var(--tint-pink)') +
+                            h.sub('What to monitor and control') +
+                            h.cards([
+                                ['Scope', 'Changes affect cost, resources, budget allocation and schedule. After changes are set, activities and timeframe need to be modified.'],
+                                ['Schedule', 'The hardest to manage and the most crucial to event success. A mismanaged or delayed exhibition causes escalated costs to reorganize or to compensate attendees.'],
+                                ['Quality', 'The quality of each activity must be carefully monitored to ensure it complies with standards agreed by clients and organizers.'],
+                                ['Contract administration', 'Check whether the service of an external provider matches the contract. Inspect the quality of services before making any payment.'],
+                                ['Cost', 'Any change in the event\'s plans, activities and timeframe can affect both the budget and costs.']
+                            ], AQUA)
+                    },
+                    {
+                        title: '5. Closing',
+                        html: h.callout('Key idea', 'Completed programs and activities mark the <b>beginning</b> of the closing phase. Closing does not mean organizers are entirely finished. It contains another set of activities to do after delivering what clients wanted, and these vary between each type of MICE event.') +
+                            h.cards([
+                                ['Administrative closure', 'Preparing documentation of the products or process delivered, asking the client for approval, recognizing the deliverables were provided, and redistributing rented project assets.'],
+                                ['Post evaluation', 'Create evaluation tools and matrices to evaluate all stakeholders: hotels, venues, logistics providers, audio and visual providers, exhibitors and on-site staff.'],
+                                ['Post-event meetings', 'Held after the event, attended by every party involved, to summarize the results and conclude the achievements and issues that arose.'],
+                                ['Measuring return on investment (ROI)', 'Compare results with the initial investment. If the outcome did not meet expectations, identify the factors that went wrong and their impact.'],
+                                ['Post-event report', 'Results of the PEIR and post-event meeting are combined into a report on every achievement and lesson learned from initiation to the end.'],
+                                ['Database preparation', 'Every document, planning and meeting information, and technical information from initiation to the end should be organized into a database.']
+                            ], PINK)
+                    },
+                    {
+                        title: 'Activity: Pen and Paper',
+                        html: h.task('Event Management',
+                            h.p('Read each question carefully and give a <b>concise, direct answer</b> based on the discussion.') +
+                            h.steps([
+                                'What is the importance of the PMBOK Framework to MICE Event Management?',
+                                'How can the PMBOK Risk Management Knowledge Area be specifically applied to planning an international medical conference?',
+                                'In what ways do the 5 PMBOK Process Groups align with the lifecycle of an incentive travel program?',
+                                'How does the PMBOK Work Breakdown Structure (WBS) prevent "scope creep" during the planning of a major Trade Exhibition?',
+                                'Compare and contrast how Stakeholder Management is handled in a corporate Meeting versus a public Consumer Exhibition using PMBOK principles.'
+                            ])) +
+                            h.callout('Submission', 'Outputs may be submitted either as a <b>hard copy</b> or through <b>Google Classroom</b>, as instructed by your teacher. Make sure all submissions are complete and handed in within <b>one (1) week</b> from the date the task is assigned, unless otherwise specified.')
+                    }
+                ]
+            }
+        ];
+
+        /* ================= lesson viewer ================= */
+        const hubView = document.getElementById('hubView');
+        const readerView = document.getElementById('readerView');
+        const moduleGrid = document.getElementById('moduleGrid');
+        const topicNav = document.getElementById('topicNav');
+        const tTitle = document.getElementById('tTitle');
+        const tBody = document.getElementById('tBody');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let current = null, topicIndex = 0;
+
+        moduleGrid.innerHTML = MODULES.map((m, n) => `
+            <button class="mod-card" data-i="${n}" style="--c:${m.color}">
+                <div class="mod-top">
+                <span class="mod-count">${m.topics.length} lessons</span>
+                </div>
+                <div class="mod-body">
+                    <span class="mod-subject">${m.subject}</span>
+                    <h3>${m.title}</h3>
+                    <p class="mod-desc">${m.desc}</p>
+                    <span class="mod-go">Start to review &rarr;</span>
+                </div>
+            </button>`).join('');
+
+        moduleGrid.addEventListener('click', e => {
+            const card = e.target.closest('.mod-card');
+            if (card) openModule(+card.dataset.i);
+        });
+
+        function openModule(n) {
+            current = MODULES[n];
+            document.getElementById('rBadge').textContent = current.num;
+            document.getElementById('rBadge').style.setProperty('--c', current.color);
+            document.getElementById('rTitle').textContent = current.title;
+            // document.getElementById('rSub').textContent = 'Module ' + current.num + ' \u00B7 ' + current.subject;
+            topicNav.innerHTML = current.topics.map((t, k) =>
+                `<button data-k="${k}"><span class="n">${k + 1}</span><span>${t.title}</span></button>`).join('');
+            hubView.hidden = true;
+            readerView.hidden = false;
+            showTopic(0, false);
+            window.scrollTo({ top: 0 });
+        }
+
+        function showTopic(k, scroll = true) {
+            topicIndex = k;
+            const t = current.topics[k];
+            tTitle.textContent = t.title;
+            tBody.innerHTML = t.html;
+            const first = tBody.querySelector('details');
+            if (first) first.open = true;
+            tBody.style.animation = 'none'; void tBody.offsetWidth; tBody.style.animation = '';
+
+            [...topicNav.children].forEach((b, n) => b.classList.toggle('active', n === k));
+            const active = topicNav.children[k];
+            if (active && topicNav.scrollWidth > topicNav.clientWidth) {
+                topicNav.scrollTo({ left: active.offsetLeft - 12, behavior: 'smooth' });
+            }
+
+            document.getElementById('rCount').textContent = 'Lesson ' + (k + 1) + ' of ' + current.topics.length;
+            document.getElementById('rBar').style.width = ((k + 1) / current.topics.length * 100) + '%';
+            prevBtn.disabled = k === 0;
+            nextBtn.innerHTML = k === current.topics.length - 1 ? 'Back to modules' : 'Next &rarr;';
+            if (scroll) readerView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        topicNav.addEventListener('click', e => {
+            const b = e.target.closest('button');
+            if (b) showTopic(+b.dataset.k);
+        });
+        prevBtn.addEventListener('click', () => { if (topicIndex > 0) showTopic(topicIndex - 1); });
+        nextBtn.addEventListener('click', () => {
+            if (topicIndex < current.topics.length - 1) showTopic(topicIndex + 1);
+            else showHub();
+        });
+
+        function showHub() {
+            readerView.hidden = true;
+            hubView.hidden = false;
+            window.scrollTo({ top: 0 });
+        }
+        document.getElementById('backBtn').addEventListener('click', showHub);
     </script>
 </body>
 
