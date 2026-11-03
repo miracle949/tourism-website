@@ -22,12 +22,22 @@
         }
 
         :root {
-            --vanilla-cream: #FFF1D6;
-            --pastel-pink: #FFC8DD;
-            --pastel-aqua: #A8DADC;
-            --pastel-green: #B8D8BA;
-            --soft-charcoal: #3D4856;
-            --ocean-blue: #6B9AC4;
+            --vanilla-cream: #FFF9EF;
+            /* main background */
+            --pastel-pink: #F4A5C5;
+            /* Chiikawa Pink */
+            --pastel-aqua: #A9CBE5;
+            /* Hachiware Blue */
+            --pastel-green: #C8DDB5;
+            /* Meadow Green */
+            --soft-charcoal: #6B5147;
+            /* Outline Brown (text, headings) */
+            --ocean-blue: #F4A5C5;
+            /* primary buttons, loader bar, plane */
+            --border: rgba(0, 100, 200, 0.18);
+            --tint-pink: rgba(244, 165, 197, 0.28);
+            --tint-aqua: rgba(169, 203, 229, 0.32);
+            --tint-green: rgba(200, 221, 181, 0.42);
         }
 
         .container-fluid {
@@ -56,7 +66,8 @@
             font-weight: 600;
             color: #ffffff;
             text-decoration: none;
-            background-color: var(--ocean-blue);
+            background-color: var(--pastel-pink);
+            /* background-color: #ffffff; */
             padding: 10px 20px;
             border-radius: 10px;
         }
@@ -79,7 +90,8 @@
         }
 
         .quiz-card {
-            background-color: var(--card-bg, #ffffff);
+            /* background-color: var(--card-bg, #ffffff); */
+            background-color: #ffffff;
             border-radius: 28px;
             padding: 2rem;
             color: var(--soft-charcoal);
@@ -95,31 +107,57 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
             font-size: 14px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
         }
 
         .badge {
-            background-color: #ffffff;
-            padding: 4px 14px;
+            background-color: var(--tint-pink);
+            color: var(--soft-charcoal);
+            padding: 6px 16px;
             border-radius: 999px;
             font-weight: 600;
+            font-size: 13px;
+        }
+
+        #counter {
+            font-size: 13px;
+            background-color: var(--vanilla-cream);
+            padding: 6px 14px;
+            border-radius: 999px;
         }
 
         .progress {
-            height: 15px;
-            background-color: rgba(255, 255, 255, 0.75);
+            height: 14px;
+            background-color: var(--tint-pink);
             border-radius: 999px;
             overflow: hidden;
             margin-bottom: 1.5rem;
+            box-shadow: inset 0 2px 4px rgba(107, 81, 71, 0.12);
         }
 
         .progress-bar {
+            position: relative;
             height: 100%;
             width: 0;
-            background-color: var(--ocean-blue);
+            min-width: 14px;
+            /* a small dot shows even on question 1 */
+            background: linear-gradient(90deg, #f8b4d0, var(--pastel-pink));
             border-radius: 999px;
             transition: width 0.4s ease;
+        }
+
+        /* soft highlight on top of the bar */
+        .progress-bar::after {
+            content: "";
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            top: 3px;
+            height: 3px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.55);
         }
 
         #question {
@@ -185,7 +223,7 @@
             display: grid;
             place-items: center;
             border-radius: 50%;
-            background-color: var(--card-bg, var(--pastel-aqua));
+            background-color: var(--tint-pink);
             font-weight: 700;
             font-size: 15px;
         }
@@ -213,7 +251,7 @@
             border-radius: 28px;
             background-color: var(--ocean-blue);
             color: #ffffff;
-            font-size: 16px;
+            font-size: 14.5px;
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
@@ -283,6 +321,109 @@
             margin-bottom: 0.5rem;
         }
 
+        /* ---------- Guide girl (top right) ---------- */
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .helper {
+            position: relative;
+            flex: none;
+        }
+
+        .helper-girl {
+            display: block;
+            height: 96px;
+            width: auto;
+        }
+
+        .helper-bubble {
+            position: absolute;
+            top: 4px;
+            right: 100%;
+            margin-right: 10px;
+            width: 240px;
+            padding: 12px 16px;
+            background: #ffffff;
+            border: 2px solid var(--tint-pink);
+            border-radius: 16px;
+            box-shadow: 0 10px 24px rgba(107, 81, 71, 0.15);
+            z-index: 5;
+            transform-origin: right center;
+        }
+
+        .helper-bubble p {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--soft-charcoal);
+        }
+
+        /* tail pointing to the girl */
+        .helper-bubble::after {
+            content: "";
+            position: absolute;
+            top: 22px;
+            right: -7px;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            border-top: 2px solid var(--tint-pink);
+            border-right: 2px solid var(--tint-pink);
+            border-radius: 2px;
+            transform: rotate(45deg);
+            transition: border-color 0.2s ease;
+        }
+
+        .helper-bubble.good,
+        .helper-bubble.good::after {
+            border-color: #3f8f4a;
+        }
+
+        .helper-bubble.bad,
+        .helper-bubble.bad::after {
+            border-color: #d9487a;
+        }
+
+        .helper-bubble.pop {
+            animation: bubblePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bubblePop {
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media only screen and (max-width: 500px) {
+            .helper-girl {
+                height: 80px;
+            }
+
+            /* bubble drops under the girl so it doesn't cover the Back button */
+            .helper-bubble {
+                top: 86px;
+                right: 0;
+                margin-right: 0;
+                width: min(230px, calc(100vw - 3rem));
+                transform-origin: top right;
+            }
+
+            .helper-bubble::after {
+                top: -8px;
+                right: 28px;
+                transform: rotate(-45deg);
+            }
+        }
+
         @media only screen and (max-width: 500px) {
             .container-fluid {
                 padding: 1.5rem;
@@ -323,10 +464,19 @@
 <body>
     <div class="container-fluid">
         <main>
-            <a href="choose.html" class="back">
-                <i class="fa fa-chevron-left"></i>
-                Back to topics
-            </a>
+            <div class="top-row">
+                <a href="introduction.html" class="back">
+                    <i class="fa fa-chevron-left"></i>
+                    Back to lessons
+                </a>
+
+                <div class="helper">
+                    <div class="helper-bubble" id="helperBubble">
+                        <p id="helperText"></p>
+                    </div>
+                    <img src="tour-girl2.png" class="helper-girl" alt="Guide">
+                </div>
+            </div>
 
             <!-- Question screen -->
             <section class="quiz-card" id="quizCard">
@@ -352,22 +502,23 @@
                 <p id="passInfo"></p>
                 <div class="result-buttons">
                     <button class="btn" id="retryBtn">Try again</button>
-                    <a href="choose.html" class="btn alt">Choose another topic</a>
+                    <a href="introduction.html" class="btn alt">Back to lessons</a>
                 </div>
             </section>
 
             <!-- Shown when the category is missing or unknown -->
             <section class="quiz-card error" id="errorCard" hidden>
                 <h2>Pick a topic first</h2>
-                <p>We couldn't find that topic. Go back and choose Event Management, Housekeeping Forms, or Front Office Liaising.</p>
+                <p>We couldn't find that topic. Go back and choose Event Management, Housekeeping Forms, or Front Office
+                    Liaising.</p>
                 <a href="choose.html" class="btn">Choose a topic</a>
             </section>
         </main>
     </div>
 
     <script>
-        const PASS_SCORE = 7;           // need 7 out of 10 to pass
-        const QUESTIONS_PER_QUIZ = 10;  // how many questions are asked each attempt
+        const PASS_SCORE = 11;      // 11 out of 15 (about 70%) to pass
+        const PER_MODULE = 5;       // 5 questions from each module = 15 total  // how many questions are asked each attempt
 
         const QUIZZES = {
             // Topic 1: Module 8 PPT (Event Management / TMICE). Pool of 30, 10 are picked each attempt.
@@ -375,36 +526,36 @@
                 title: 'Event Management',
                 color: 'var(--pastel-green)',
                 questions: [
-                    { q: "Event management is best described as which of the following?", options: ["The professional process of planning, organizing, coordinating, and executing gatherings and celebrations","Selling airline tickets to tourists","Designing hotel buildings","Advertising tourism products on social media only"], answer: "The professional process of planning, organizing, coordinating, and executing gatherings and celebrations" },
-                    { q: "In the tourism and hospitality sector, what does TMICE stand for?", options: ["Tourism, Meetings, Incentives, Conventions, and Exhibitions","Travel, Marketing, Innovation, Culture, and Events","Tourism, Management, Investments, Conferences, and Expos","Transport, Meetings, Incentives, Customs, and Entertainment"], answer: "Tourism, Meetings, Incentives, Conventions, and Exhibitions" },
-                    { q: "Why does every TMICE event function as a standalone project?", options: ["Because TMICE events are temporary, high-budget, time-sensitive, and multi-faceted","Because they repeat the same plan every year","Because they do not need a budget","Because they are always run by one person"], answer: "Because TMICE events are temporary, high-budget, time-sensitive, and multi-faceted" },
-                    { q: "What does project management help to plan, execute, control, and finalize?", options: ["Complex business events and travel itineraries","National elections","Daily household chores","Online shopping orders"], answer: "Complex business events and travel itineraries" },
-                    { q: "According to the module, a project must have what?", options: ["A definite beginning and ending period","No fixed deadline","A permanent team that never changes","An unlimited budget"], answer: "A definite beginning and ending period" },
-                    { q: "Which activity is listed under project management in MICE events?", options: ["Site visits and choosing venues and accommodations","Drafting new laws for the host country","Manufacturing event equipment","Training airline pilots"], answer: "Site visits and choosing venues and accommodations" },
-                    { q: "Which organization wrote the PMBOK framework discussed in the module?", options: ["American National Standards Institute (ANSI)","World Tourism Organization","International Olympic Committee","World Health Organization"], answer: "American National Standards Institute (ANSI)" },
-                    { q: "How is the PMBOK guide described in the module?", options: ["A process-based framework","A hotel rating system","A travel booking website","A financial accounting software"], answer: "A process-based framework" },
-                    { q: "The three components of the PMBOK framework are classified into how many project management steps?", options: ["Five","Three","Seven","Ten"], answer: "Five" },
-                    { q: "Which of these is NOT one of the five PMBOK process groups?", options: ["Marketing","Initiating","Planning","Closing"], answer: "Marketing" },
-                    { q: "Compared with conventions and exhibitions, how much time do organizers use to communicate with clients for corporate meetings and incentive travel programs?", options: ["Much less time","Much more time","Exactly the same time","No time at all"], answer: "Much less time" },
-                    { q: "What do organizers clarify with clients in pre-event meetings?", options: ["Goals and objectives, size of the event, and other requirements","Only the color of the staff uniforms","Only the final post-event report","Only the catering invoice"], answer: "Goals and objectives, size of the event, and other requirements" },
-                    { q: "What does RFP stand for?", options: ["Request for Proposal","Report for Payment","Registration for Participants","Review of Previous Plans"], answer: "Request for Proposal" },
-                    { q: "Project planning success depends on what?", options: ["The amount and quality of information gathered at project initiation","The size of the event logo","The number of souvenirs prepared","The weather on the day of the event"], answer: "The amount and quality of information gathered at project initiation" },
-                    { q: "What is the Work Breakdown Structure (WBS)?", options: ["Breaking the entire event into smaller activities that serve as a checklist","A list of hotel rooms booked by guests","A summary written after the event","A contract with external service providers"], answer: "Breaking the entire event into smaller activities that serve as a checklist" },
-                    { q: "Which process confirms with clients the correctness and completeness of the plan?", options: ["Scope verification","Scope control","Scope defining","Risk management"], answer: "Scope verification" },
-                    { q: "Which process allows an organizer to monitor the actual progress of each task compared to what was planned?", options: ["Scope control","Scope defining","Scope planning","Staffing"], answer: "Scope control" },
-                    { q: "In the staffing plan, organizers single out tasks and give each of them what?", options: ["An appropriate due date","A ticket price","A sponsor logo","A venue color"], answer: "An appropriate due date" },
-                    { q: "Which of the following is an example of a risk that can affect an event?", options: ["Natural disasters or undesirable weather conditions","A well-prepared event schedule","A signed contract with a vendor","A completed post-event report"], answer: "Natural disasters or undesirable weather conditions" },
-                    { q: "Why do core organizers assign tasks to external service providers?", options: ["They cannot perform all the tasks alone","They want to avoid contact with clients","Events no longer need planning","Contracts are not required"], answer: "They cannot perform all the tasks alone" },
-                    { q: "The success of the project execution phase highly depends on what?", options: ["Planning accuracy and completeness","The number of social media followers","The name of the venue","The size of the guest list only"], answer: "Planning accuracy and completeness" },
-                    { q: "Why does the initial plan continuously change during execution?", options: ["Because of changing client requests and unexpected events or conditions","Because planning is not needed","Because the event has no clients","Because contracts are always cancelled"], answer: "Because of changing client requests and unexpected events or conditions" },
-                    { q: "What is the purpose of information distribution during execution?", options: ["To update progress, identify potential issues, and align expectations with related parties","To announce the event winners","To print the event tickets","To close the project accounts"], answer: "To update progress, identify potential issues, and align expectations with related parties" },
-                    { q: "Project monitoring and control involves comparing which two things?", options: ["Actual performance with planned performance","Prices of two different hotels","Two competing events","Past clients and future clients"], answer: "Actual performance with planned performance" },
-                    { q: "Which of these is one of the three parts of risk meetings?", options: ["Executive review","Menu tasting","Ribbon-cutting ceremony","Guest registration"], answer: "Executive review" },
-                    { q: "Which type of control is described as the hardest to manage and the most crucial to event success?", options: ["Schedule","Quality","Cost","Scope"], answer: "Schedule" },
-                    { q: "What should staff do before making any payment to an external service provider?", options: ["Inspect the quality of the services against the contract","Cancel the contract","Hire a new provider","Increase the budget"], answer: "Inspect the quality of the services against the contract" },
-                    { q: "Which closing activity involves preparing documentation of what was delivered and redistributing rented project assets?", options: ["Administrative closure","Post evaluation","Risk identification","Scope defining"], answer: "Administrative closure" },
-                    { q: "Measuring return on investment (ROI) compares the results with what?", options: ["The initial investment","The number of attendee complaints","The size of the venue","Competitors' prices"], answer: "The initial investment" },
-                    { q: "What does a post-event report point out?", options: ["Every achievement and lessons learned from project initiation to the very end","Only the profits of the vendors","Only the complaints of attendees","Only the menu served at the event"], answer: "Every achievement and lessons learned from project initiation to the very end" }
+                    { q: "Event management is best described as which of the following?", options: ["The professional process of planning, organizing, coordinating, and executing gatherings and celebrations", "Selling airline tickets to tourists", "Designing hotel buildings", "Advertising tourism products on social media only"], answer: "The professional process of planning, organizing, coordinating, and executing gatherings and celebrations" },
+                    { q: "In the tourism and hospitality sector, what does TMICE stand for?", options: ["Tourism, Meetings, Incentives, Conventions, and Exhibitions", "Travel, Marketing, Innovation, Culture, and Events", "Tourism, Management, Investments, Conferences, and Expos", "Transport, Meetings, Incentives, Customs, and Entertainment"], answer: "Tourism, Meetings, Incentives, Conventions, and Exhibitions" },
+                    { q: "Why does every TMICE event function as a standalone project?", options: ["Because TMICE events are temporary, high-budget, time-sensitive, and multi-faceted", "Because they repeat the same plan every year", "Because they do not need a budget", "Because they are always run by one person"], answer: "Because TMICE events are temporary, high-budget, time-sensitive, and multi-faceted" },
+                    { q: "What does project management help to plan, execute, control, and finalize?", options: ["Complex business events and travel itineraries", "National elections", "Daily household chores", "Online shopping orders"], answer: "Complex business events and travel itineraries" },
+                    { q: "According to the module, a project must have what?", options: ["A definite beginning and ending period", "No fixed deadline", "A permanent team that never changes", "An unlimited budget"], answer: "A definite beginning and ending period" },
+                    { q: "Which activity is listed under project management in MICE events?", options: ["Site visits and choosing venues and accommodations", "Drafting new laws for the host country", "Manufacturing event equipment", "Training airline pilots"], answer: "Site visits and choosing venues and accommodations" },
+                    { q: "Which organization wrote the PMBOK framework discussed in the module?", options: ["American National Standards Institute (ANSI)", "World Tourism Organization", "International Olympic Committee", "World Health Organization"], answer: "American National Standards Institute (ANSI)" },
+                    { q: "How is the PMBOK guide described in the module?", options: ["A process-based framework", "A hotel rating system", "A travel booking website", "A financial accounting software"], answer: "A process-based framework" },
+                    { q: "The three components of the PMBOK framework are classified into how many project management steps?", options: ["Five", "Three", "Seven", "Ten"], answer: "Five" },
+                    { q: "Which of these is NOT one of the five PMBOK process groups?", options: ["Marketing", "Initiating", "Planning", "Closing"], answer: "Marketing" },
+                    { q: "Compared with conventions and exhibitions, how much time do organizers use to communicate with clients for corporate meetings and incentive travel programs?", options: ["Much less time", "Much more time", "Exactly the same time", "No time at all"], answer: "Much less time" },
+                    { q: "What do organizers clarify with clients in pre-event meetings?", options: ["Goals and objectives, size of the event, and other requirements", "Only the color of the staff uniforms", "Only the final post-event report", "Only the catering invoice"], answer: "Goals and objectives, size of the event, and other requirements" },
+                    { q: "What does RFP stand for?", options: ["Request for Proposal", "Report for Payment", "Registration for Participants", "Review of Previous Plans"], answer: "Request for Proposal" },
+                    { q: "Project planning success depends on what?", options: ["The amount and quality of information gathered at project initiation", "The size of the event logo", "The number of souvenirs prepared", "The weather on the day of the event"], answer: "The amount and quality of information gathered at project initiation" },
+                    { q: "What is the Work Breakdown Structure (WBS)?", options: ["Breaking the entire event into smaller activities that serve as a checklist", "A list of hotel rooms booked by guests", "A summary written after the event", "A contract with external service providers"], answer: "Breaking the entire event into smaller activities that serve as a checklist" },
+                    { q: "Which process confirms with clients the correctness and completeness of the plan?", options: ["Scope verification", "Scope control", "Scope defining", "Risk management"], answer: "Scope verification" },
+                    { q: "Which process allows an organizer to monitor the actual progress of each task compared to what was planned?", options: ["Scope control", "Scope defining", "Scope planning", "Staffing"], answer: "Scope control" },
+                    { q: "In the staffing plan, organizers single out tasks and give each of them what?", options: ["An appropriate due date", "A ticket price", "A sponsor logo", "A venue color"], answer: "An appropriate due date" },
+                    { q: "Which of the following is an example of a risk that can affect an event?", options: ["Natural disasters or undesirable weather conditions", "A well-prepared event schedule", "A signed contract with a vendor", "A completed post-event report"], answer: "Natural disasters or undesirable weather conditions" },
+                    { q: "Why do core organizers assign tasks to external service providers?", options: ["They cannot perform all the tasks alone", "They want to avoid contact with clients", "Events no longer need planning", "Contracts are not required"], answer: "They cannot perform all the tasks alone" },
+                    { q: "The success of the project execution phase highly depends on what?", options: ["Planning accuracy and completeness", "The number of social media followers", "The name of the venue", "The size of the guest list only"], answer: "Planning accuracy and completeness" },
+                    { q: "Why does the initial plan continuously change during execution?", options: ["Because of changing client requests and unexpected events or conditions", "Because planning is not needed", "Because the event has no clients", "Because contracts are always cancelled"], answer: "Because of changing client requests and unexpected events or conditions" },
+                    { q: "What is the purpose of information distribution during execution?", options: ["To update progress, identify potential issues, and align expectations with related parties", "To announce the event winners", "To print the event tickets", "To close the project accounts"], answer: "To update progress, identify potential issues, and align expectations with related parties" },
+                    { q: "Project monitoring and control involves comparing which two things?", options: ["Actual performance with planned performance", "Prices of two different hotels", "Two competing events", "Past clients and future clients"], answer: "Actual performance with planned performance" },
+                    { q: "Which of these is one of the three parts of risk meetings?", options: ["Executive review", "Menu tasting", "Ribbon-cutting ceremony", "Guest registration"], answer: "Executive review" },
+                    { q: "Which type of control is described as the hardest to manage and the most crucial to event success?", options: ["Schedule", "Quality", "Cost", "Scope"], answer: "Schedule" },
+                    { q: "What should staff do before making any payment to an external service provider?", options: ["Inspect the quality of the services against the contract", "Cancel the contract", "Hire a new provider", "Increase the budget"], answer: "Inspect the quality of the services against the contract" },
+                    { q: "Which closing activity involves preparing documentation of what was delivered and redistributing rented project assets?", options: ["Administrative closure", "Post evaluation", "Risk identification", "Scope defining"], answer: "Administrative closure" },
+                    { q: "Measuring return on investment (ROI) compares the results with what?", options: ["The initial investment", "The number of attendee complaints", "The size of the venue", "Competitors' prices"], answer: "The initial investment" },
+                    { q: "What does a post-event report point out?", options: ["Every achievement and lessons learned from project initiation to the very end", "Only the profits of the vendors", "Only the complaints of attendees", "Only the menu served at the event"], answer: "Every achievement and lessons learned from project initiation to the very end" }
                 ]
             },
             // Topic 2: Housekeeping PPT (forms, handling client queries, common problems). Pool of 20, 10 are picked each attempt.
@@ -469,7 +620,6 @@
         // ---------- Elements ----------
         const quizCard = document.getElementById('quizCard');
         const resultCard = document.getElementById('result');
-        const errorCard = document.getElementById('errorCard');
         const categoryName = document.getElementById('categoryName');
         const counter = document.getElementById('counter');
         const bar = document.getElementById('bar');
@@ -480,11 +630,41 @@
         const retryBtn = document.getElementById('retryBtn');
 
         // ---------- State ----------
-        const category = new URLSearchParams(window.location.search).get('category');
-        const quiz = QUIZZES[category];
         let questions = [];
         let index = 0;
         let score = 0;
+
+        // ---------- Guide girl messages ----------
+        const helperBubble = document.getElementById('helperBubble');
+        const helperText = document.getElementById('helperText');
+
+        const MSG_START = [
+            "Take your time and pick an answer!",
+            "You can do it! Read carefully.",
+            "Here's the next one. Good luck!",
+            "Think about what you learned in the lessons."
+        ];
+        const MSG_GOOD = [
+            "Correct! Great job!",
+            "Yes! You really know this one!",
+            "Awesome! Keep it up!",
+            "That's right! You're doing great!"
+        ];
+        const MSG_BAD = [
+            "Oops! Don't worry, you'll get the next one.",
+            "Not quite, but keep going!",
+            "Almost! Remember the correct answer for next time.",
+            "That's okay. Mistakes help us learn!"
+        ];
+
+        function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+        function say(text, type) {
+            helperText.textContent = text;
+            helperBubble.className = 'helper-bubble' + (type ? ' ' + type : '');
+            void helperBubble.offsetWidth;          // restart the pop animation
+            helperBubble.classList.add('pop');
+        }
 
         function shuffle(arr) {
             const copy = [...arr];
@@ -496,20 +676,27 @@
         }
 
         function startQuiz() {
-            questions = shuffle(quiz.questions).slice(0, QUESTIONS_PER_QUIZ);
+            // 5 random questions from every module, then shuffle them all together
+            questions = shuffle(
+                Object.values(QUIZZES).flatMap(function (mod) {
+                    return shuffle(mod.questions).slice(0, PER_MODULE).map(function (item) {
+                        return Object.assign({}, item, { title: mod.title, color: mod.color });
+                    });
+                })
+            );
             index = 0;
             score = 0;
             resultCard.hidden = true;
             quizCard.hidden = false;
-            categoryName.textContent = quiz.title;
-            document.querySelector('main').style.setProperty('--card-bg', quiz.color);
             showQuestion();
         }
 
         function showQuestion() {
             const current = questions[index];
+            categoryName.textContent = current.title;
+            document.querySelector('main').style.setProperty('--card-bg', current.color);
             counter.textContent = 'Question ' + (index + 1) + ' of ' + questions.length;
-            bar.style.width = (index / questions.length) * 100 + '%';
+            bar.style.width = ((index + 1) / questions.length) * 100 + '%';
             questionEl.textContent = current.q;
             feedback.textContent = '';
             nextBtn.hidden = true;
@@ -528,6 +715,8 @@
                 btn.addEventListener('click', function () { chooseAnswer(btn, text); });
                 optionsEl.appendChild(btn);
             });
+
+            say(index === 0 ? "Hi! Let's start the quiz. Good luck!" : pick(MSG_START));
         }
 
         function chooseAnswer(clicked, text) {
@@ -546,10 +735,12 @@
             if (isCorrect) {
                 score++;
                 feedback.textContent = 'Correct! +1 point';
+                say(pick(MSG_GOOD), 'good');
             } else {
                 clicked.classList.add('wrong');
                 clicked.querySelector('.fa').classList.add('fa-xmark');
                 feedback.textContent = 'Not quite. The correct answer is ' + current.answer + '.';
+                say(pick(MSG_BAD), 'bad');
             }
 
             nextBtn.textContent = index === questions.length - 1 ? 'See results' : 'Next question';
@@ -572,8 +763,8 @@
             status.className = 'status ' + (passed ? 'passed' : 'failed');
 
             document.getElementById('resultMessage').textContent = passed
-                ? 'Great job! You really know your ' + quiz.title.toLowerCase() + ' lessons.'
-                : 'You can try again. You can do better on this topic.';
+                ? 'Great job! You really know your lessons.'
+                : 'You can try again. You can do better next time.';
 
             document.getElementById('passInfo').textContent =
                 'Passing score: ' + PASS_SCORE + ' out of ' + total + '.';
@@ -590,13 +781,7 @@
 
         retryBtn.addEventListener('click', startQuiz);
 
-        // ---------- Start ----------
-        if (quiz) {
-            startQuiz();
-        } else {
-            quizCard.hidden = true;
-            errorCard.hidden = false;
-        }
+        startQuiz();
     </script>
 </body>
 

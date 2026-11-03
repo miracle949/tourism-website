@@ -1305,9 +1305,8 @@
             gap: 12px;
         }
 
-        /* show on the module list and lesson reader only */
-        html:has(#hubView:not([hidden])) .quiz-helper,
-        html:has(#readerView:not([hidden])) .quiz-helper {
+        /* show on the "Your Lessons" (module list) page only */
+        html:has(#hubView:not([hidden])) .quiz-helper {
             display: flex;
         }
 
@@ -1674,7 +1673,7 @@
     <div class="quiz-helper" id="quizHelper">
         <div class="quiz-bubble" id="quizBubble">
             <p>Done reviewing? Test what you learned!</p>
-            <a href="choose.html" class="quiz-start">
+            <a href="quiz.html" class="quiz-start">
                 <i class="fa fa-pen-to-square"></i>
                 <span>Start Quiz</span>
                 <i class="fa fa-arrow-right"></i>
