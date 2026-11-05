@@ -102,7 +102,7 @@
 
         .parent-box .message {
             width: 280px;
-            height: 130px;
+            height: auto;
             background-color: white;
             border-radius: 10px;
             padding: 1rem;
@@ -910,13 +910,13 @@
             padding-bottom: 3vh;
         }
 
-        #placesList.spotlight .place {
+        /* #placesList.spotlight .place {
             scroll-snap-align: center;
         }
 
         html:has(#placesView.spotlight-on) {
             scroll-snap-type: y proximity;
-        }
+        } */
 
         .places-end {
             display: flex;
@@ -1508,10 +1508,10 @@
 
         /* ---------- mobile: cards are taller than the screen ---------- */
         @media only screen and (max-width: 700px) {
-            #placesList.spotlight .place {
+            /* #placesList.spotlight .place {
                 scroll-snap-align: start;
                 scroll-margin-top: 1rem;
-            }
+            } */
 
             /* no zoom on mobile, so nothing gets cut off at the sides */
             #placesView.spotlight-on #placesList .place.active {
@@ -1673,7 +1673,7 @@
     <div class="quiz-helper" id="quizHelper">
         <div class="quiz-bubble" id="quizBubble">
             <p>Done reviewing? Test what you learned!</p>
-            <a href="quiz.html" class="quiz-start">
+            <a href="quiz.html" class="quiz-start" id="quizStartLink">
                 <i class="fa fa-pen-to-square"></i>
                 <span>Start Quiz</span>
                 <i class="fa fa-arrow-right"></i>
@@ -1735,9 +1735,21 @@
         </div>
     </div>
 
+    <div class="guide-overlay" id="quizGuideOverlay" aria-hidden="true">
+        <div class="parent-box guide-box">
+            <div class="box"></div>
+            <div class="right-box">
+                <div class="message">
+                    <p id="quizGuideText"></p>
+                    <button id="quizGuideBtn">Continue <i class="fa fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* ================= girl intro ================= */
-        const text = "Welcome to our tourism website! Discover beautiful destinations, plan your perfect trip, and explore the best places with us. Let me be your guide!";
+        const text = "Welcome to our tourism website! Discover beautiful destinations, plan your perfect trip, and explore the best places with us.";
         const el = document.getElementById('typed-text');
         const btn = document.querySelector('.right-box button');
         const parentBox = document.querySelector('.parent-box');
@@ -2476,6 +2488,42 @@
             if (!quizHelper.contains(e.target)) setQuizHelper(false);
         });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') setQuizHelper(false); });
+
+        /* ================= quiz notice (girl before the quiz) ================= */
+        const quizGuideOverlay = document.getElementById('quizGuideOverlay');
+        const quizGuideText = document.getElementById('quizGuideText');
+        const quizGuideBtn = document.getElementById('quizGuideBtn');
+        const quizGuideMsg = "Before you start: you can only take this quiz 2 times, so review your lessons first and do your best!";
+        let qgi = 0, qgTimer = null;
+
+        function typeQuizGuide() {
+            if (qgi < quizGuideMsg.length) {
+                quizGuideText.textContent += quizGuideMsg.charAt(qgi++);
+                qgTimer = setTimeout(typeQuizGuide, 25);
+            } else {
+                quizGuideBtn.classList.add('show');
+            }
+        }
+
+        document.getElementById('quizStartLink').addEventListener('click', e => {
+            e.preventDefault();
+            qgi = 0;
+            clearTimeout(qgTimer);
+            quizGuideText.textContent = '';
+            quizGuideBtn.classList.remove('show');
+            quizGuideOverlay.classList.remove('closing');
+            quizGuideOverlay.classList.add('open');
+            quizGuideOverlay.setAttribute('aria-hidden', 'false');
+            document.documentElement.classList.add('modal-open');
+            qgTimer = setTimeout(typeQuizGuide, 1400);
+        });
+
+        quizGuideBtn.addEventListener('click', () => {
+            localStorage.removeItem('quizAttempts');
+            sessionStorage.removeItem('quizResult');   // add this line
+            quizGuideOverlay.classList.add('closing');
+            setTimeout(() => { window.location.href = 'quiz.html'; }, 400);
+        });
     </script>
 </body>
 

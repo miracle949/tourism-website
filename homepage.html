@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <title>Choose your trip</title>
+    <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url('Poppins/Poppins-Bold.ttf') format('truetype');
+            font-weight: 400;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: 0;
+            font-family: "Poppins", sans-serif;
+        }
+
+        :root {
+            --vanilla-cream: #FFF1D6;
+            --pastel-pink: #FFC8DD;
+            --pastel-aqua: #A8DADC;
+            --pastel-green: #B8D8BA;
+            --soft-charcoal: #3D4856;
+            --ocean-blue: #6B9AC4;
+        }
+
+        .container-fluid {
+            display: flex;
+            justify-content: center;
+            /* align-items: center; */
+            /* height: 100dvh; */
+            height: 100vh;
+            background-color: var(--vanilla-cream);
+            position: relative;
+            padding: 1.8rem;
+            overflow-y: auto;
+            /* overflow: hidden; */
+        }
+
+        /* ---------- Focus reminder modal ---------- */
+        html.modal-open,
+        html.modal-open body {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .focus-overlay,
+        .focus-overlay * {
+            box-sizing: border-box;
+            /* only for the modal, since * above has box-sizing: 0 */
+        }
+
+        .focus-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 150;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            background-color: rgba(61, 72, 86, 0.55);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            overscroll-behavior: contain;
+            touch-action: none;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+
+            background-color: #FFF1D6;
+            /* was rgba(61, 72, 86, 0.55) */
+            -webkit-backdrop-filter: none;
+            /* was blur(6px) */
+            backdrop-filter: none;
+        }
+
+
+
+        .focus-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: opacity 0.3s ease, visibility 0s linear 0s;
+        }
+
+        .focus-modal {
+            width: 100%;
+            max-width: 440px;
+            padding: 2rem 1.3rem;
+            text-align: center;
+            color: #6B5147;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(61, 72, 86, 0.25);
+            transform: translateY(30px) scale(0.9);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .focus-overlay.open .focus-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .focus-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .focus-icon img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .focus-modal h3 {
+            font-size: 26px;
+            font-weight: 400;
+            margin-bottom: 0.6rem;
+        }
+
+        .focus-modal p {
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .focus-list {
+            list-style: none;
+            display: grid;
+            gap: 8px;
+            margin: 1rem 0 1.4rem;
+            text-align: left;
+        }
+
+        .focus-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            font-size: 14.5px;
+            line-height: 1.5;
+            background: #FFF9EF;
+            border-radius: 16px;
+        }
+
+        .focus-list li span {
+            flex: none;
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            color: #ffffff;
+            background: #6B5147;
+            border-radius: 50%;
+        }
+
+        .focus-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 32px;
+            cursor: pointer;
+            color: #6B5147;
+            background: #F4A5C5;
+            transition: transform 0.15s ease;
+        }
+
+        .focus-btn .fa {
+            font-size: 13px;
+        }
+
+        .focus-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .container-fluid .page-nav {
+            text-align: center;
+            /* margin-top: 2rem; */
+        }
+
+        .container-fluid .page-nav h5 {
+            margin-top: 0.5rem;
+        }
+
+        .container-fluid .page-song {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container-fluid .page-song h5 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+
+        <div class="focus-overlay" id="focusModal" aria-hidden="true">
+            <div class="focus-modal" role="dialog" aria-modal="true" aria-labelledby="focusTitle">
+                <div class="focus-icon">
+                    <img src="images/flight-logo.png" alt="Flight Logo">
+                </div>
+                <h3 id="focusTitle">Stay Focused</h3>
+                <p>Before you continue, please keep these in mind:</p>
+                <ul class="focus-list">
+                    <li><span>1</span>Read everything on each page carefully</li>
+                    <li><span>2</span>Focus on what it say</li>
+                    <li><span>3</span>Take your time and don't rush</li>
+                </ul>
+                <button class="focus-btn" id="focusOk">Continue <i class="fa fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div class="page-parent">
+            <div class="page-nav">
+                <h2>When I Met You</h2>
+
+                <h5>to Linsey</h5>
+            </div>
+
+            <div class="page-song">
+                <h5>Someone left you a song. Maybe it says what they couldn't say in words.</h5>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <script>
+        const focusModal = document.getElementById('focusModal');
+
+        function openFocus() {
+            focusModal.classList.add('open');
+            focusModal.setAttribute('aria-hidden', 'false');
+            document.documentElement.classList.add('modal-open');
+        }
+
+        function closeFocus() {
+            focusModal.classList.remove('open');
+            focusModal.setAttribute('aria-hidden', 'true');
+            document.documentElement.classList.remove('modal-open');
+        }
+
+        document.getElementById('focusOk').addEventListener('click', closeFocus);
+
+        // opens when the page loads, right after Next in the quiz
+        window.addEventListener('load', () => setTimeout(openFocus, 300));
+    </script>
+
+</body>
+
+</html>

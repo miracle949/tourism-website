@@ -257,6 +257,10 @@
             cursor: pointer;
         }
 
+        .btn .fa {
+            font-size: 13px;
+        }
+
         .btn[hidden] {
             display: none;
         }
@@ -410,17 +414,17 @@
 
             /* bubble drops under the girl so it doesn't cover the Back button */
             .helper-bubble {
-                top: 86px;
-                right: 0;
+                top: 55px;
+                right: 50px;
                 margin-right: 0;
                 width: min(230px, calc(100vw - 3rem));
                 transform-origin: top right;
             }
 
             .helper-bubble::after {
-                top: -8px;
-                right: 28px;
-                transform: rotate(-45deg);
+                top: 15px;
+                right: -8px;
+                transform: rotate(45deg);
             }
         }
 
@@ -502,7 +506,8 @@
                 <p id="passInfo"></p>
                 <div class="result-buttons">
                     <button class="btn" id="retryBtn">Try again</button>
-                    <a href="introduction.html" class="btn alt">Back to lessons</a>
+                    <a href="homepage.html" class="btn" id="nextPageBtn" hidden>Next <i
+                            class="fa fa-arrow-right"></i></a>
                 </div>
             </section>
 
@@ -518,6 +523,13 @@
 
     <script>
         const PASS_SCORE = 11;      // 11 out of 15 (about 70%) to pass
+        const MAX_ATTEMPTS = 2;
+
+        function getAttempts() { return parseInt(localStorage.getItem('quizAttempts') || '0', 10); }
+        function resetAttempts() {
+            localStorage.removeItem('quizAttempts');
+            sessionStorage.removeItem('quizResult');
+        }
         const PER_MODULE = 5;       // 5 questions from each module = 15 total  // how many questions are asked each attempt
 
         const QUIZZES = {
@@ -750,13 +762,19 @@
 
         function showResult() {
             const total = questions.length;
-            const passed = score >= PASS_SCORE;
+            localStorage.setItem('quizAttempts', getAttempts() + 1);
+            sessionStorage.setItem('quizResult', JSON.stringify({ score: score, total: total }));
+            renderResult(score, total);
+        }
+
+        function renderResult(finalScore, total) {
+            const passed = finalScore >= PASS_SCORE;
 
             bar.style.width = '100%';
             quizCard.hidden = true;
             resultCard.hidden = false;
 
-            document.getElementById('scoreText').textContent = score + ' / ' + total;
+            document.getElementById('scoreText').textContent = finalScore + ' / ' + total;
 
             const status = document.getElementById('statusText');
             status.textContent = passed ? 'Passed' : 'Failed';
@@ -766,8 +784,15 @@
                 ? 'Great job! You really know your lessons.'
                 : 'You can try again. You can do better next time.';
 
+            const used = getAttempts();
+            const noMoreTries = used >= MAX_ATTEMPTS;
             document.getElementById('passInfo').textContent =
-                'Passing score: ' + PASS_SCORE + ' out of ' + total + '.';
+                'Passing score: ' + PASS_SCORE + ' out of ' + total + '. Attempt ' + used + ' of ' + MAX_ATTEMPTS + '.';
+            document.getElementById('retryBtn').hidden = noMoreTries;
+            document.getElementById('nextPageBtn').hidden = !noMoreTries;
+
+            // the guide girl reacts to the result (also after a reload)
+            say(passed ? "Great job! You really know your lessons!" : "That's okay. Mistakes help us learn!", passed ? 'good' : 'bad');
         }
 
         nextBtn.addEventListener('click', function () {
@@ -779,9 +804,28 @@
             }
         });
 
-        retryBtn.addEventListener('click', startQuiz);
+        retryBtn.addEventListener('click', function () {
+            sessionStorage.removeItem('quizResult');
+            startQuiz();
+        });
 
-        startQuiz();
+        // leaving the quiz page = fresh start next time
+        document.getElementById('nextPageBtn').addEventListener('click', resetAttempts);
+        document.querySelector('.back').addEventListener('click', resetAttempts);
+        document.querySelector('#result .btn.alt')?.addEventListener('click', resetAttempts);
+
+        // on reload: if a result was saved, stay on the results page
+        let saved = null;
+        try { saved = JSON.parse(sessionStorage.getItem('quizResult')); } catch (e) { }
+
+        if (saved) {
+            renderResult(saved.score, saved.total);
+        } else if (getAttempts() >= MAX_ATTEMPTS) {
+            resetAttempts();
+            window.location.href = 'homepage.html';
+        } else {
+            startQuiz();
+        }
     </script>
 </body>
 
