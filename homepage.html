@@ -5,6 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script>
+        // pop-ups show on every normal visit, and are skipped only on a reload
+        (function () {
+            var nav = performance.getEntriesByType('navigation')[0];
+            var isReload = nav && nav.type === 'reload';
+            var seen = sessionStorage.getItem('homeSeen') === '1' && isReload;
+
+            if (!seen) {
+                sessionStorage.removeItem('homeSeen');
+                document.documentElement.classList.add('modal-open', 'first-visit');
+            }
+        })();
+    </script>
 
     <title>Choose your trip</title>
     <link rel="stylesheet" href="font-awesome-icon/css/all.min.css">
@@ -29,7 +42,7 @@
             --pastel-pink: #FFC8DD;
             --pastel-aqua: #A8DADC;
             --pastel-green: #B8D8BA;
-            --soft-charcoal: #3D4856;
+            --soft-charcoal: #6B5147;
             --ocean-blue: #6B9AC4;
         }
 
@@ -98,7 +111,7 @@
             max-width: 440px;
             padding: 2rem 1.3rem;
             text-align: center;
-            color: #6B5147;
+            color: var(--soft-charcoal);
             background: #ffffff;
             border-radius: 28px;
             box-shadow: 0 20px 40px rgba(61, 72, 86, 0.25);
@@ -170,7 +183,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 15px;
+            font-size: 13.5px;
             border: none;
             border-radius: 10px;
             padding: 10px 32px;
@@ -193,8 +206,15 @@
             /* margin-top: 2rem; */
         }
 
+        .container-fluid .page-nav h2 {
+            /* font-size: 22px; */
+            color: var(--soft-charcoal);
+        }
+
         .container-fluid .page-nav h5 {
             margin-top: 0.5rem;
+            font-size: 14.5px;
+            color: var(--soft-charcoal);
         }
 
         .container-fluid .page-song {
@@ -203,13 +223,467 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            gap: 2rem;
         }
 
         .container-fluid .page-song h5 {
             text-align: center;
+            font-size: 14.5px;
+            color: var(--soft-charcoal);
+        }
+
+        .container-fluid .page-song .image-parent {
+            padding: 15px 20px 12px;
+            background: #ffffff;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            /* song row on top, label below */
+            gap: 10px;
+            width: min(250px, 100%);
+        }
+
+        /* top row: song on the left, heart on the right */
+        .container-fluid .page-song .image-parent .image-parent-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* bottom label, small and uppercase like the first screenshot */
+        .container-fluid .page-song .image-parent .remind {
+            text-align: left;
+            font-size: 10.5px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--soft-charcoal);
+        }
+
+        .container-fluid .page-song .image-parent .remind i {
+            font-size: 9px;
+        }
+
+        .container-fluid .page-song .image-parent .image-parent-first {
+            display: flex;
+            /* flex-direction: column; */
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .container-fluid .page-song .image-parent img {
+            width: 55px;
+            height: 55px;
+            border-radius: 10px;
+        }
+
+        .container-fluid .page-song .image-parent .image-parent-text h4 {
+            font-size: 15px;
+            color: var(--soft-charcoal);
+            text-align: left;
+        }
+
+        .container-fluid .page-song .image-parent .image-parent-text .text {
+            font-size: 14px;
+            color: var(--soft-charcoal);
+            text-align: left;
+        }
+
+        .container-fluid .page-song .image-parent .image-parent-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container-fluid .page-song .image-parent .image-parent-icon .fa-regular {
+            color: var(--soft-charcoal);
+            font-size: 18px;
+        }
+
+        /* .container-fluid .page-song .image-parent .image-parent-icon img {
+            width: 40px;
+            height: 40px;
+        } */
+
+        /* open on first paint: no fade-in, so the page behind is never seen */
+        .focus-overlay.open {
+            transition: none;
+        }
+
+        /* card animation on load (the overlay itself stays solid, so nothing shows behind) */
+        .focus-overlay.open .focus-modal {
+            animation: focusPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+        }
+
+        @keyframes focusPop {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* the three reminders slide in one after another */
+        .focus-overlay.open .focus-list li {
+            animation: focusItem 0.5s ease both;
+        }
+
+        .focus-overlay.open .focus-list li:nth-child(1) {
+            animation-delay: 0.55s;
+        }
+
+        .focus-overlay.open .focus-list li:nth-child(2) {
+            animation-delay: 0.7s;
+        }
+
+        .focus-overlay.open .focus-list li:nth-child(3) {
+            animation-delay: 0.85s;
+        }
+
+        @keyframes focusItem {
+            from {
+                opacity: 0;
+                transform: translateX(-16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* the Continue button fades in last */
+        .focus-overlay.open .focus-btn {
+            animation: focusItem 0.5s ease 1s both;
+        }
+
+        /* ========== LETTER ENVELOPE (inside the page) ========== */
+        .page-letter,
+        .page-letter * {
+            box-sizing: border-box;
+        }
+
+        .page-letter {
+            margin: 6rem 0 3rem;
+            opacity: 0;
+        }
+
+        .page-letter.show {
+            opacity: 1;
+        }
+
+        /* envelope and paper share the same spot */
+        .letter-stage {
+            display: grid;
+            justify-items: center;
+            align-items: start;
+        }
+
+        .letter-stage>* {
+            grid-area: 1 / 1;
+        }
+
+        /* ----- envelope ----- */
+        .envelope {
+            position: relative;
+            width: 280px;
+            height: 190px;
+            margin-bottom: 3.5rem;
+            /* room for "Tap to open" */
+            cursor: pointer;
+            transition: transform 0.7s ease, opacity 0.6s ease;
+        }
+
+        .page-letter.show .envelope {
+            animation: envIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both,
+                envFloat 3s ease-in-out 1s infinite;
+        }
+
+        /* .page-letter.show .envelope.opened {
+            animation: none;
+            cursor: default;
+        } */
+
+        @keyframes envIn {
+            from {
+                opacity: 0;
+                transform: translateY(60px) scale(0.7) rotate(-6deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0);
+            }
+        }
+
+        @keyframes envFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .env-back {
+            position: absolute;
+            inset: 0;
+            background: #E98DB1;
+            border-radius: 8px;
+            box-shadow: 0 18px 36px rgba(107, 81, 71, 0.25);
+            z-index: 0;
+        }
+
+        .env-letter {
+            position: absolute;
+            left: 16px;
+            width: 248px;
+            top: 14px;
+            height: 160px;
+            background:
+                repeating-linear-gradient(transparent 0 20px, #f3d9e3 20px 22px) 14px 40px / calc(100% - 28px) 100px no-repeat,
+                #ffffff;
+            border-radius: 6px;
+            z-index: 2;
+            transition: transform 0.9s cubic-bezier(0.34, 1.2, 0.64, 1) 0.5s;
+        }
+
+        .envelope.opened .env-letter {
+            transform: translateY(-90px);
+        }
+
+        .env-front {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            background:
+                linear-gradient(to top right, #F7B7D0 50%, transparent 50%) left bottom / 50% 100% no-repeat,
+                linear-gradient(to top left, #F7B7D0 50%, transparent 50%) right bottom / 50% 100% no-repeat;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .env-front::before,
+        .env-front::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-top: 95px solid transparent;
+            border-bottom: 95px solid transparent;
+        }
+
+        .env-front::before {
+            left: 0;
+            border-left: 140px solid #F4A5C5;
+            border-radius: 0 0 0 8px;
+        }
+
+        .env-front::after {
+            right: 0;
+            border-right: 140px solid #F4A5C5;
+            border-radius: 0 0 8px 0;
+        }
+
+        .env-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 110px solid #F08DB4;
+            transform-origin: top center;
+            z-index: 4;
+            transition: transform 0.6s ease, z-index 0s linear 0.3s;
+        }
+
+        .envelope.opened .env-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .env-heart {
+            position: absolute;
+            top: 82px;
+            left: 50%;
+            width: 38px;
+            height: 38px;
+            margin-left: -19px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #E8658F;
+            font-size: 16px;
+            z-index: 5;
+            box-shadow: 0 4px 10px rgba(107, 81, 71, 0.25);
+            transition: opacity 0.3s ease;
+        }
+
+        .envelope.opened .env-heart,
+        .envelope.opened .env-hint {
+            opacity: 0;
+        }
+
+        .env-hint {
+            position: absolute;
+            top: calc(100% + 22px);
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 14px;
+            color: #6B5147;
+            animation: hintPulse 1.6s ease-in-out infinite;
+            transition: opacity 0.3s ease;
+        }
+
+        @keyframes hintPulse {
+
+            0%,
+            100% {
+                opacity: 0.45;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* tapping the opened envelope shows the letter again */
+        .page-letter.show .envelope.opened {
+            cursor: pointer;
+        }
+
+        /* ----- full-screen letter reader ----- */
+        .letter-reader,
+        .letter-reader * {
+            box-sizing: border-box;
+        }
+
+        .letter-reader {
+            position: fixed;
+            inset: 0;
+            z-index: 130;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            background: #FFF1D6;
+            /* solid, so the page behind disappears */
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+        }
+
+        .letter-reader.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: opacity 0.5s ease, visibility 0s linear 0s;
+        }
+
+        .paper {
+            width: min(370px, 100%);
+            max-height: 86vh;
+            overflow-y: auto;
+            padding: 2rem 1.6rem 1.6rem;
+            text-align: center;
+            color: #6B5147;
+            background:
+                repeating-linear-gradient(transparent 0 31px, #f6e6d0 31px 32px),
+                #FFFDF8;
+            border-radius: 14px;
+            box-shadow: 0 24px 50px rgba(107, 81, 71, 0.25);
+            transform: translateY(40px) scale(0.9);
+            transition: transform 0.7s cubic-bezier(0.34, 1.4, 0.64, 1);
+        }
+
+        .letter-reader.open .paper {
+            transform: translateY(0) scale(1);
+        }
+
+        .paper h3 {
+            font-size: 20px;
+            font-weight: 400;
+        }
+
+        .paper p {
+            font-size: 15px;
+            line-height: 2;
+            /* matches the ruled lines */
+            margin-bottom: 0.8rem;
+        }
+
+        .paper-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 0.6rem;
+            font-size: 13.5px;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 32px;
+            cursor: pointer;
+            color: #6B5147;
+            background: #F4A5C5;
+            transition: transform 0.15s ease;
+        }
+
+        .paper-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .paper-btn .fa {
+            font-size: 13px;
+        }
+
+        /* first visit only: Stay Focused is open from the first paint */
+        html.first-visit #focusModal {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: none;
+        }
+
+        html.first-visit #focusModal .focus-modal {
+            animation: focusPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+        }
+
+        html.first-visit #focusModal .focus-list li {
+            animation: focusItem 0.5s ease both;
+        }
+
+        html.first-visit #focusModal .focus-list li:nth-child(1) {
+            animation-delay: 0.55s;
+        }
+
+        html.first-visit #focusModal .focus-list li:nth-child(2) {
+            animation-delay: 0.7s;
+        }
+
+        html.first-visit #focusModal .focus-list li:nth-child(3) {
+            animation-delay: 0.85s;
+        }
+
+        html.first-visit #focusModal .focus-btn {
+            animation: focusItem 0.5s ease 1s both;
         }
     </style>
 </head>
+
+<audio id="bgMusic" src="about-you.mp3" loop preload="auto"></audio>
 
 <body>
 
@@ -231,6 +705,22 @@
             </div>
         </div>
 
+        <!-- ========== "HI BEHH" POP-UP ========== -->
+        <div class="focus-overlay" id="introModal" aria-hidden="true">
+            <div class="focus-modal" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+                <div class="focus-icon">
+                    <img src="images/flight-logo.png" alt="Flight Logo">
+                </div>
+                <!-- ✏️ CHANGE THE TEXT BELOW TO YOURS -->
+                <h3 id="introTitle">Hi behh</h3>
+                <p>I know this is unusual peroo i want to say thank youu for being part of my life, for being my friend
+                    new friend or bestfriend? hahahahahaha continue moo pleasee</p>
+                <!-- ✏️ END OF YOUR TEXT -->
+                <button class="focus-btn" id="introOk" style="margin-top:1.2rem">Continue <i
+                        class="fa fa-arrow-right"></i></button>
+            </div>
+        </div>
+
         <div class="page-parent">
             <div class="page-nav">
                 <h2>When I Met You</h2>
@@ -240,6 +730,53 @@
 
             <div class="page-song">
                 <h5>Someone left you a song. Maybe it says what they couldn't say in words.</h5>
+
+                <div class="image-parent">
+                    <div class="image-parent-row">
+                        <div class="image-parent-first">
+                            <img src="about-you-img.png" alt="">
+                            <div class="image-parent-text">
+                                <h4>About You</h4>
+                                <div class="text">The 1975</div>
+                            </div>
+                        </div>
+                        <div class="image-parent-icon">
+                            <i class="fa-regular fa-heart"></i>
+                        </div>
+                    </div>
+
+                    <div class="remind">A song for you <i class="fa-regular fa-heart"></i></div>
+                </div>
+            </div>
+
+            <div class="page-letter" id="pageLetter">
+                <div class="letter-stage">
+
+                    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the letter">
+                        <div class="env-back"></div>
+                        <div class="env-letter"></div>
+                        <div class="env-front"></div>
+                        <div class="env-flap"></div>
+                        <div class="env-heart"><i class="fa fa-heart"></i></div>
+                        <p class="env-hint">Tap to open</p>
+                    </div>
+
+                    <!-- ========== LETTER READER (covers the whole page) ========== -->
+                    <div class="letter-reader" id="letterReader" aria-hidden="true">
+                        <div class="paper" id="paper" role="dialog" aria-modal="true">
+                            <!-- ✏️ CHANGE THE TEXT BELOW TO YOURS -->
+                            <h3>Dear Linsey,</h3>
+                            <p>
+                                Hii behh, I just wanted to say that I really like you and I think you're amazing. I hope
+                                we can get to know each other better and maybe go on a date sometime. You're always on
+                                my mind and I can't wait to see you again.
+                            </p>
+                            <!-- ✏️ END OF YOUR TEXT -->
+                            <button class="paper-btn" id="paperClose">Close <i class="fa fa-xmark"></i></button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
 
@@ -249,23 +786,81 @@
 
     <script>
         const focusModal = document.getElementById('focusModal');
+        const introModal = document.getElementById('introModal');
+        const pageLetter = document.getElementById('pageLetter');
+        const envelope = document.getElementById('envelope');
+        const root = document.documentElement;
 
-        function openFocus() {
-            focusModal.classList.add('open');
-            focusModal.setAttribute('aria-hidden', 'false');
+        /* Stay Focused  ->  "Hi behh" pop-up */
+        document.getElementById('focusOk').addEventListener('click', () => {
+            introModal.classList.add('open');            // opens underneath first, so the page is never seen
+            introModal.setAttribute('aria-hidden', 'false');
+            root.classList.remove('first-visit');        // lets the Stay Focused overlay close
+            focusModal.setAttribute('aria-hidden', 'true');
+        });
+
+        const ENVELOPE_DELAY = 1200;   // envelope pops in (about 1s), then starts opening
+        const LETTER_DELAY = 2000;     // the letter appears 2 seconds after that
+
+        const bgMusic = document.getElementById('bgMusic');
+
+        document.getElementById('introOk').addEventListener('click', () => {
+            introModal.classList.remove('open');
+            introModal.setAttribute('aria-hidden', 'true');
+            root.classList.remove('modal-open');
+            sessionStorage.setItem('homeSeen', '1');
+            pageLetter.classList.add('show');
+
+            // play the song (allowed because this runs from a click)
+            bgMusic.currentTime = 0;
+            bgMusic.volume = 0.8;
+            bgMusic.play().catch(err => console.log('Music could not play:', err));
+
+            setTimeout(openEnvelope, ENVELOPE_DELAY);
+        });
+
+        /* reload after the pop-ups: skip them and show the page with the envelope */
+        if (sessionStorage.getItem('homeSeen') === '1') {
+            pageLetter.classList.add('show');
+            document.addEventListener('click', () => bgMusic.play().catch(() => { }), { once: true });
+        }
+
+        /* tap the envelope: flap opens, letter rises, then the full letter shows */
+        const letterReader = document.getElementById('letterReader');
+
+        /* show / hide the full-screen letter */
+        function showReader() {
+            letterReader.classList.add('open');
+            letterReader.setAttribute('aria-hidden', 'false');
             document.documentElement.classList.add('modal-open');
         }
 
-        function closeFocus() {
-            focusModal.classList.remove('open');
-            focusModal.setAttribute('aria-hidden', 'true');
+        function closeReader() {
+            if (!letterReader.classList.contains('open')) return;   // first line
+
+            letterReader.classList.remove('open');
+            letterReader.setAttribute('aria-hidden', 'true');
             document.documentElement.classList.remove('modal-open');
+
+            // wait for the cover to fade out, then close the envelope behind it
+            setTimeout(() => envelope.classList.remove('opened'), 500);
         }
 
-        document.getElementById('focusOk').addEventListener('click', closeFocus);
+        /* tap the envelope: flap opens, letter rises, then the letter covers the page */
+        function openEnvelope() {
+            if (envelope.classList.contains('opened')) return;
+            envelope.classList.add('opened');
+            setTimeout(showReader, LETTER_DELAY);   // letter shows 2 seconds after the envelope starts opening
+        }
 
-        // opens when the page loads, right after Next in the quiz
-        window.addEventListener('load', () => setTimeout(openFocus, 300));
+        envelope.addEventListener('click', openEnvelope);
+        envelope.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
+        });
+
+        document.getElementById('paperClose').addEventListener('click', closeReader);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReader(); });
+
     </script>
 
 </body>
