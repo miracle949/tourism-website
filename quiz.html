@@ -563,6 +563,16 @@
             transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
+        .pin-modal input[hidden] {
+            display: none;
+        }
+
+        /* the name box shouldn't have the wide PIN letter spacing */
+        #nameInput {
+            letter-spacing: normal;
+            font-size: 18px;
+        }
+
         .pin-overlay.open .pin-modal {
             transform: translateY(0) scale(1);
         }
@@ -692,13 +702,19 @@
         </main>
     </div>
 
-    <!-- PIN pop-up -->
+    <!-- Name + PIN pop-up -->
     <div class="pin-overlay" id="pinOverlay" aria-hidden="true">
         <div class="pin-modal" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
-            <h3 id="pinTitle">Enter the PIN to Continue 🔒</h3>
-            <p>You need to enter the PIN before you can proceed.</p>
+            <h3 id="pinTitle">Enter your First Name 👋</h3>
+            <p id="pinDesc">Please type your first name to continue.</p>
+
+            <!-- Step 1: first name -->
+            <input type="text" id="nameInput" maxlength="30" autocomplete="off" placeholder="First name">
+
+            <!-- Step 2: PIN (hidden until needed) -->
             <input type="password" inputmode="numeric" maxlength="5" id="pinInput" autocomplete="off"
-                placeholder="•••••">
+                placeholder="•••••" hidden>
+
             <p class="pin-error" id="pinError"></p>
             <button class="btn" id="pinOk">Continue <i class="fa fa-arrow-right"></i></button>
         </div>
@@ -1001,45 +1017,97 @@
         document.querySelector('.back').addEventListener('click', resetAttempts);
         document.querySelector('#result .btn.alt')?.addEventListener('click', resetAttempts);
 
-        // ---------- Final screen + PIN ----------
+        // ---------- Final screen + Name / PIN ----------
         const PIN_CODE = '83026';
+        const ALLOWED_NAME = 'linsey';          // compared in lowercase, so Linsey / linsey / LINSEY all work
         const finalScreen = document.getElementById('finalScreen');
         const pinOverlay = document.getElementById('pinOverlay');
+        const nameInput = document.getElementById('nameInput');
         const pinInput = document.getElementById('pinInput');
         const pinError = document.getElementById('pinError');
+        const pinTitle = document.getElementById('pinTitle');
+        const pinDesc = document.getElementById('pinDesc');
+
+        let pinStep = 'name';                   // 'name' or 'pin'
 
         function showFinal() {
             quizCard.hidden = true;
             resultCard.hidden = true;
-            document.querySelector('.top-row').style.display = 'none';   // hides Back button + small helper
+            document.querySelector('.top-row').style.display = 'none';
             finalScreen.hidden = false;
         }
 
-        document.getElementById('finalNextBtn').addEventListener('click', function () {
+        function showNameStep() {
+            pinStep = 'name';
+            pinTitle.textContent = 'Enter your First Name 👋';
+            pinDesc.textContent = 'Please type your first name to continue.';
+            nameInput.hidden = false;
+            pinInput.hidden = true;
+            nameInput.value = '';
             pinInput.value = '';
             pinError.textContent = '';
+        }
+
+        function showPinStep() {
+            pinStep = 'pin';
+            pinTitle.textContent = 'Enter the PIN to Continue 🔒';
+            pinDesc.textContent = 'You need to enter the PIN before you can proceed.';
+            nameInput.hidden = true;
+            pinInput.hidden = false;
+            pinInput.value = '';
+            pinError.textContent = '';
+            pinInput.focus();
+        }
+
+        function shakeModal() {
+            const modal = pinOverlay.querySelector('.pin-modal');
+            modal.classList.remove('shake');
+            void modal.offsetWidth;
+            modal.classList.add('shake');
+        }
+
+        document.getElementById('finalNextBtn').addEventListener('click', function () {
+            showNameStep();
             pinOverlay.classList.add('open');
             pinOverlay.setAttribute('aria-hidden', 'false');
-            setTimeout(function () { pinInput.focus(); }, 350);
+            setTimeout(function () { nameInput.focus(); }, 350);
         });
 
-        function checkPin() {
-            if (pinInput.value === PIN_CODE) {
-                resetAttempts();
-                window.location.href = 'homepage.html';
+        function checkStep() {
+            if (pinStep === 'name') {
+                const name = nameInput.value.trim().toLowerCase();
+
+                if (!name) {
+                    pinError.textContent = 'Please enter your first name.';
+                    shakeModal();
+                    nameInput.focus();
+                    return;
+                }
+
+                if (name === ALLOWED_NAME) {
+                    // Linsey: no PIN needed
+                    resetAttempts();
+                    window.location.href = 'homepage.html';
+                } else {
+                    // anyone else: ask for the PIN
+                    showPinStep();
+                }
             } else {
-                pinError.textContent = 'That PIN is incorrect. Please try again to proceed.';
-                pinInput.value = '';
-                const modal = pinOverlay.querySelector('.pin-modal');
-                modal.classList.remove('shake');
-                void modal.offsetWidth;
-                modal.classList.add('shake');
-                pinInput.focus();
+                if (pinInput.value === PIN_CODE) {
+                    resetAttempts();
+                    window.location.href = 'homepage.html';
+                } else {
+                    pinError.textContent = 'That PIN is incorrect. Please try again to proceed.';
+                    pinInput.value = '';
+                    shakeModal();
+                    pinInput.focus();
+                }
             }
         }
 
-        document.getElementById('pinOk').addEventListener('click', checkPin);
-        pinInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') checkPin(); });
+        document.getElementById('pinOk').addEventListener('click', checkStep);
+        nameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') checkStep(); });
+        pinInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') checkStep(); });
 
         // ---------- Start ----------
         if (getAttempts() >= MAX_ATTEMPTS) {

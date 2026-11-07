@@ -38,7 +38,7 @@
         }
 
         :root {
-            --vanilla-cream: #FFF1D6;
+            --vanilla-cream: #FFF9EF;
             --pastel-pink: #FFC8DD;
             --pastel-aqua: #A8DADC;
             --pastel-green: #B8D8BA;
@@ -90,7 +90,8 @@
             pointer-events: none;
             transition: opacity 0.3s ease, visibility 0s linear 0.3s;
 
-            background-color: #FFF1D6;
+            /* background-color: #FFF1D6; */
+            background-color: var(--vanilla-cream);
             /* was rgba(61, 72, 86, 0.55) */
             -webkit-backdrop-filter: none;
             /* was blur(6px) */
@@ -579,7 +580,8 @@
             justify-content: center;
             align-items: center;
             padding: 1.5rem;
-            background: #FFF1D6;
+            /* background: #FFF1D6; */
+            background-color: var(--vanilla-cream);
             /* solid, so the page behind disappears */
             opacity: 0;
             visibility: hidden;
@@ -617,20 +619,21 @@
         .paper h3 {
             font-size: 20px;
             font-weight: 400;
+            margin: 0 0 1.5rem;
         }
 
         .paper p {
             font-size: 15px;
             line-height: 2;
             /* matches the ruled lines */
-            margin-bottom: 0.8rem;
+            /* margin-bottom: 0.8rem; */
         }
 
         .paper-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-top: 0.6rem;
+            margin-top: 1.5rem;
             font-size: 13.5px;
             border: none;
             border-radius: 10px;
@@ -647,6 +650,114 @@
 
         .paper-btn .fa {
             font-size: 13px;
+        }
+
+        .paper {
+            overflow-x: hidden;
+            /* so the image can slide in from the side without a scrollbar */
+        }
+
+        .paper #letterTyped p {
+            text-align: center;
+        }
+
+        /* the fb_lins image: starts off to the right, slides in */
+        .pic-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            background: rgba(107, 81, 71, 0.35);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+        }
+
+        .pic-overlay.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            /* 👈 added */
+            transition: opacity 0.5s ease, visibility 0s linear 0s;
+        }
+
+        .pic-card {
+            max-width: min(300px, 100%);
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 24px 50px rgba(61, 72, 86, 0.4);
+            transform: scale(0.7) rotate(-4deg);
+            transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1);
+        }
+
+        .pic-overlay.show .pic-card {
+            transform: scale(1) rotate(-2deg);
+        }
+
+        .pic-card img {
+            display: block;
+            width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        /* thumbnail that waits on the side after the pop-up */
+        /* thumbnail columns on the sides */
+        .thumb-col {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .thumb-col.right {
+            right: 6px;
+        }
+
+        .thumb-col.left {
+            left: 6px;
+        }
+
+        .pic-thumb {
+            width: 40px;
+            height: 40px;
+            padding: 3px;
+            border: none;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(107, 81, 71, 0.3);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateX(150%) rotate(8deg);
+            transition: transform 0.7s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.5s ease;
+        }
+
+        .thumb-col.left .pic-thumb {
+            transform: translateX(-150%) rotate(-8deg);
+        }
+
+        .thumb-col .pic-thumb.in {
+            opacity: 1;
+            transform: none;
+        }
+
+        .pic-thumb img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
         }
 
         /* first visit only: Stay Focused is open from the first paint */
@@ -679,6 +790,18 @@
 
         html.first-visit #focusModal .focus-btn {
             animation: focusItem 0.5s ease 1s both;
+        }
+
+        @media only screen and (max-width: 500px) {
+            .container-fluid {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100dvh;
+                background-color: var(--vanilla-cream);
+                position: relative;
+                overflow: hidden;
+            }
         }
     </style>
 </head>
@@ -765,15 +888,82 @@
                     <div class="letter-reader" id="letterReader" aria-hidden="true">
                         <div class="paper" id="paper" role="dialog" aria-modal="true">
                             <!-- ✏️ CHANGE THE TEXT BELOW TO YOURS -->
-                            <h3>Dear Linsey,</h3>
-                            <p>
-                                Hii behh, I just wanted to say that I really like you and I think you're amazing. I hope
-                                we can get to know each other better and maybe go on a date sometime. You're always on
-                                my mind and I can't wait to see you again.
+                            <h3>Dear (Behh, Seyy, Lins, Linsey),</h3>
+                            <p id="letterSource" hidden>
+                                Hii behh sana basahin mo toh pleasee hahahaha nagmakaawa, first of all thank youu so
+                                much for being a good friend of mine, thank youu kasi nakilala kita sorry diko muna
+                                isasali si bhea dito sa message ko na toh hahahaha, i know this is unusual na mag
+                                memessage ako ng ganto kahaba but yun and di padin tayo tlga ganun ka mag kakilala lalo
+                                na sa personal gusto tlga kita maka chikahan hahahaha, mustaa palaa? sorry ah kung
+                                palagi ako nagtatanong ng kamusta i want to make sure lang na okay ka or kung okay ka
+                                lang ba kamusta mga nangyari sa buong maghapon mo kasi i know busy ka din sa tindahan
+                                nyo. pero yun may pinaka purpose tlga to behh gusto ko sabihin sayo na i really like you
+                                behh Oo, Yes behh Gusto kita sorry kung ngayun ko lang sinabi toh tbh ito tlga yung
+                                gagawin ko na confession sayo plinano ko tlga toh gawin behh like nag drawing drawing pa
+                                ako kung paano ko siya gagawin hahaha tas butii nalang may kakilala ako na tourism
+                                friend ko din nanghingi ako ng modules or lessons nila para nga sa gagawin ko which ito
+                                hahahaha gusto ko tlga ipakita sayo behh na your worthy sa mga gantong effort na
+                                pinaglalaanan tlga ng oras ng utak at ng idea ng pagod kung paano ka mapapasaya or
+                                mapapakita sayo kung gaano ka kahalaga/ka importante i know hindi siya kalakihan peroo
+                                dahil nga i really appreciate youuu kaya ginawa or binuo ko toh behh, no pressure behh
+                                no need na ireciprocate mo yung feelings ko behh even alam ko naman na imposible yun
+                                hahahaha diko alam if may nagugustuhan ka na iba or may gusto ka or meron kang bf sorry
+                                kung meronn i just only want to say na i
+                                like you, i admire youu so muchh, i really appreciate youu yung kagandahan mo yung
+                                kabaitan
+                                mo yung kakulitan moo behh sa sobrang gusto kita behh alam ko na yung iba mong mga
+                                favorite yung mga hindi mo iniinom hindi ka mahilig sa mainit na inumin and you like
+                                chiikawa dibaa diko alam if napansin mo inspired tlga yung design or kulay ng website sa
+                                chiikawa hehehe and na cucurios ka ba kung kelan or pano nagsimula na nagkagusto ako
+                                sayo? then pala behh di pala kita nakilala beforee yung nagkakalaro tayo ng among us
+                                diko alam kung sino ka dunn T_T kasii diba ilang beses din tayo naglaro tas yung parang
+                                guest the place ata yun hahaha yung naka discord tayoo tas ket sa mga picture niyo nila
+                                jai di pa kita napapansin nunn, napansin lang kita nung nagkalaro tayo nila bhea nung
+                                una di
+                                pa ako na cucurious sayo pero nung pangalawa or pangatlo dun na ako na curious sayo kasi
+                                ang cute ng boses moo tas ganda moo T_T tapos nagkalaro pa tayoo naalala mo nung nawalan
+                                kami ng internet nagchat pa ako nun kay bhea na chat ka kasi nga nawalan kami ng
+                                internet tapos sumunod nag ask na ako kay jai na kung ano fb or facebook mo hahahaha tas
+                                yun alam nya na agad inasar asar nya na ako hahahaha alam nya na agad eh yun nga yung na
+                                kwento nya sayoo about nga dun sa inask ko
+                                yung fb mo na sinabi mo din sakinn hahahaha then yung inaccept mo ko behh sobrang saya
+                                ko nun hahahaha tas
+                                inistalk kita dun ko nakita na President and Deans Lister ka shalaa T_T mas lalo kita
+                                nagustuhan nun hehehe talino naman ni crushh then nabanggit mo nga na gusto mo ng
+                                chiikawa so yung naging nickname koo sayo CL chiikawa Linsey T_T i don't know kung
+                                nakita mo siya sa notes ko hahaha tas sakto dumaan sa fb ko yung chiikawa ng mcdo kaya
+                                gusto tlga kita ayain ng mcdo nun tapos bigay sayo tas kinikilig tlga ako nun kasi nga
+                                kapag nagnonotes ako nagcocomment ka eh about sayo yun T_T tapos yung sa birthday month
+                                behh kung naaalala moo yung nilagay ko birthday month mo tapos nilagay mo din sakin
+                                kilig to the bone din ako dun T_T hahaha, tapos nung finollow mo ko sa ig behhh T_T
+                                hahaha tas dun na yung time na inistalk kita gandaa moo tlgaa behhh tas yung nag post ka
+                                nung swimming nyo, gusto ko dinn mag thank youu behh kasi nung mga time na sobrang busyy
+                                koo sa capstone like gabi na ako nauwi umaga ako naalis tas gabi na yung uwian ikaww
+                                yung parang naging pahinga or motivation koo tuwing gabii tayoo nagkakalaro lagi and
+                                kapag narinig ko na yung boses moo wala na agad yung pagod ko hehehe tas yung naglaro
+                                tayo ng roblox na naka discord nilaro natin yung chameleon game ng roblox then yung
+                                umuwii ka behh gusto sana kita ayain kasama din si bhea sana kasi nahihiya akoo nung
+                                umuwi ka din dito nung nag story ka nung picture nyo tas naaalala mo yung nag jabii
+                                tayooo tbh kabado akoo nunn kasi nga first time kita makikitaa likee diko alam kung ano
+                                sasabihin ko nunn tas nung nakita sobrang gandaa moo behh like legit afterr nunn sobrang
+                                saya ko hehehe tas yunn hahahaha sorryy kung napaka haba na nitoo behh sorry na yunn
+                                langg namann ingaat ka palagii and it's really nice meeting youu tlgaa behh hehehe
                             </p>
+                            <!-- the typed text and the image appear here -->
+                            <div id="letterTyped"></div>
                             <!-- ✏️ END OF YOUR TEXT -->
                             <button class="paper-btn" id="paperClose">Close <i class="fa fa-xmark"></i></button>
                         </div>
+                        <!-- the fb_lins image pops up here, in front of the letter -->
+                        <div class="pic-overlay" id="picOverlay" aria-hidden="true">
+                            <div class="pic-card">
+                                <img id="picImg" alt="fb_lins">
+                            </div>
+                        </div>
+                        <!-- small thumbnail on the side: tap to see the picture again -->
+                        <!-- thumbnail columns: up to 10 on each side -->
+                        <div class="thumb-col right" id="thumbRight"></div>
+                        <div class="thumb-col left" id="thumbLeft"></div>
                     </div>
 
                 </div>
@@ -789,6 +979,8 @@
         const introModal = document.getElementById('introModal');
         const pageLetter = document.getElementById('pageLetter');
         const envelope = document.getElementById('envelope');
+        // const picThumb = document.getElementById('picThumb');
+        // const picThumbImg = document.getElementById('picThumbImg');
         const root = document.documentElement;
 
         /* Stay Focused  ->  "Hi behh" pop-up */
@@ -828,21 +1020,205 @@
         /* tap the envelope: flap opens, letter rises, then the full letter shows */
         const letterReader = document.getElementById('letterReader');
 
+        /* ---------- Typing effect + fb_lins image ---------- */
+        const TYPE_SPEED = 55;        // slower (was 22). Bigger = slower
+        const PIC_SHOW_TIME = 4000;   // image stays 4 seconds
+        const PIC_TRIGGER = 'nag ask na ako kay jai na kung ano fb or facebook mo';
+
+        // tries each file type until one works // each image stays 4 seconds
+
+        // each picture: the words that make it appear + the file name (no extension)
+        const PICS = [
+            { trigger: 'nagkalaro tayo nila bhea', names: ['kalaro_bhea'] },
+            { trigger: 'kasi ang cute ng boses moo tas ganda moo', names: ['picture_mo'] },
+            { trigger: 'nag ask na ako kay jai na kung ano fb or facebook mo', names: ['fb_lins'] },
+            { trigger: 'sinabi mo din sakinn', names: ['nahanap'] },
+            { trigger: 'inaccept mo ko behh sobrang saya ko nun', names: ['accept'] },
+            { trigger: 'nakita na President and Deans Lister', names: ['president', 'deans'] },
+            { trigger: 'dumaan sa fb ko yung chiikawa ng mcdo', names: ['chiikawa'] },
+            { trigger: 'nagnonotes ako nagcocomment ka eh about sayo yun', names: ['inlab'] },
+            { trigger: 'tapos nilagay mo din sakin', names: ['birthday'] },
+            { trigger: 'tapos nung finollow mo ko sa ig behhh', names: ['follow_ig'] },
+            { trigger: 'inistalk kita gandaa moo tlgaa behhh', names: ['ganda'] },
+            { trigger: 'yung nag post ka nung swimming nyo', names: ['ganda_mo'] },
+            { trigger: 'naglaro tayo ng roblox na naka discord', names: ['discord'] },
+            { trigger: 'chameleon game ng roblox', names: ['roblox'] },
+            { trigger: 'nag story ka nung picture nyo', names: ['story_mo'] },
+            { trigger: 'naaalala mo yung nag jabii tayooo', names: ['jabi'] }
+        ];
+        const PIC_EXTS = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'PNG', 'JPG', 'JPEG'];
+
+        const paper = document.getElementById('paper');
+        const letterSource = document.getElementById('letterSource');
+        const letterTyped = document.getElementById('letterTyped');
+        const picOverlay = document.getElementById('picOverlay');
+        const picImg = document.getElementById('picImg');
+        const thumbRight = document.getElementById('thumbRight');
+        const thumbLeft = document.getElementById('thumbLeft');
+        const FULL_TEXT = letterSource.textContent.replace(/\s+/g, ' ').trim();
+
+        let typeRun = 0;
+        let skipTyping = false;
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        // tries each file type until one works
+        function loadPic(name) {
+            return new Promise(resolve => {
+                let i = 0;
+                const test = new Image();
+                test.onload = () => resolve(test.src);
+                test.onerror = () => {
+                    i++;
+                    if (i < PIC_EXTS.length) test.src = 'images/' + name + '.' + PIC_EXTS[i];
+                    else { console.warn(name + ' image not found in /images'); resolve(null); }
+                };
+                test.src = 'images/' + name + '.' + PIC_EXTS[0];
+            });
+        }
+
+        function showPic(src) {
+            picImg.src = src;
+            picOverlay.classList.add('show');
+            picOverlay.setAttribute('aria-hidden', 'false');
+        }
+
+        function hidePic() {
+            picOverlay.classList.remove('show');
+            picOverlay.setAttribute('aria-hidden', 'true');
+        }
+
+        // small thumbnail on the right side, stacked one under another
+        // small thumbnails: first 10 on the right, next 10 on the left
+        function addThumb(src, n) {
+            const perSide = 10;
+            if (n >= perSide * 2) return;                    // max 20
+            const col = n < perSide ? thumbRight : thumbLeft;
+
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'pic-thumb';
+            b.innerHTML = '<img alt="">';
+            b.querySelector('img').src = src;
+            b.addEventListener('click', () => showPic(src));
+            col.appendChild(b);
+            void b.offsetWidth;
+            b.classList.add('in');
+        }
+
+        function clearThumbs() {
+            document.querySelectorAll('.pic-thumb').forEach(t => t.remove());
+        }
+
+        async function typeInto(el, text, run) {
+            const base = el.textContent;
+            for (let i = 0; i < text.length; i++) {
+                if (run !== typeRun) return false;
+                if (skipTyping) { el.textContent = base + text; break; }
+                el.textContent += text[i];
+                paper.scrollTop = paper.scrollHeight;
+                await sleep(TYPE_SPEED + (',.?!'.includes(text[i]) ? 150 : 0));
+            }
+            paper.scrollTop = paper.scrollHeight;
+            return true;
+        }
+
+        async function startTyping() {
+            const run = ++typeRun;
+            skipTyping = false;
+            letterTyped.innerHTML = '';
+            paper.scrollTop = 0;
+            hidePic();
+            clearThumbs();
+
+            // start finding all images early
+            const srcPromises = PICS.map(p => Promise.all(p.names.map(loadPic)));
+
+            // find where each picture's trigger ends in the letter
+            const cuts = [];
+            let from = 0;
+            PICS.forEach(p => {
+                const idx = FULL_TEXT.indexOf(p.trigger, from);
+                const cut = idx === -1 ? null : idx + p.trigger.length;
+                cuts.push(cut);
+                if (cut !== null) from = cut;
+            });
+
+            const para = document.createElement('p');
+            letterTyped.appendChild(para);
+
+            let pos = 0;
+            let thumbCount = 0;
+
+            for (let n = 0; n < PICS.length; n++) {
+                if (cuts[n] === null) continue;
+
+                // type the text up to this picture's trigger (same paragraph)
+                const chunk = FULL_TEXT.slice(pos, cuts[n]).trim();
+                pos = cuts[n];
+                skipTyping = false;
+                if (!await typeInto(para, (para.textContent ? ' ' : '') + chunk, run)) return;
+
+                // show the picture
+                // show the picture(s) one after another
+                const srcs = await srcPromises[n];
+                if (run !== typeRun) return;
+                for (const src of srcs) {
+                    if (!src) continue;
+                    showPic(src);
+                    await sleep(PIC_SHOW_TIME);
+                    if (run !== typeRun) return;
+                    hidePic();
+                    await sleep(600);
+                    if (run !== typeRun) return;
+                    addThumb(src, thumbCount++);
+                }
+            }
+
+            // the rest of the letter
+            const rest = FULL_TEXT.slice(pos).trim();
+            if (rest) {
+                skipTyping = false;
+                await typeInto(para, (para.textContent ? ' ' : '') + rest, run);
+            }
+        }
+
+        // tap the paper to skip the typing
+        paper.addEventListener('click', e => {
+            if (e.target.closest('#paperClose')) return;
+            skipTyping = true;
+        });
+
+        // tap the thumbnail: show the picture again
+        // tap the paper to skip the typing
+        // paper.addEventListener('click', e => {
+        //     if (e.target.closest('#paperClose')) return;
+        //     skipTyping = true;
+        // });
+
+        // tap anywhere on the blurred background: close it again
+        // tap anywhere on the blurred background: close it again
+        picOverlay.addEventListener('click', hidePic);
+
         /* show / hide the full-screen letter */
         function showReader() {
             letterReader.classList.add('open');
             letterReader.setAttribute('aria-hidden', 'false');
             document.documentElement.classList.add('modal-open');
+            startTyping();
         }
 
         function closeReader() {
-            if (!letterReader.classList.contains('open')) return;   // first line
+            if (!letterReader.classList.contains('open')) return;
 
+            typeRun++;
+            picOverlay.classList.remove('show');
+            // picThumb.classList.remove('in');           // 👈 added: stops the typing
+            hidePic();
+            clearThumbs();
             letterReader.classList.remove('open');
             letterReader.setAttribute('aria-hidden', 'true');
             document.documentElement.classList.remove('modal-open');
 
-            // wait for the cover to fade out, then close the envelope behind it
             setTimeout(() => envelope.classList.remove('opened'), 500);
         }
 
